@@ -1,0 +1,290 @@
+body {
+  background: radial-gradient(circle, #333333 40%, #111111 100%);
+}
+
+.NavBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  width: 100%;
+  padding: 10px;
+}
+
+.menu {
+  display: flex;
+  justify-content: flex-start;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.menu li a {
+  display: block;
+  padding: 10px;
+  color: rgb(177, 105, 213);
+  text-decoration: none;
+  text-shadow: 0 0 5px rgba(177, 105, 213, 0.8),
+    0 0 10px rgba(177, 105, 213, 0.6), 0 0 15px rgba(177, 105, 213, 0.4),
+    0 0 20px rgba(177, 105, 213, 0.2);
+}
+
+.home {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  padding: 80px;
+}
+
+.landing-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 80vw;
+  max-width: 800px;
+  background-color: rgb(39, 39, 38);
+  padding: 40px;
+  border: 2px solid rgb(177, 105, 213);
+  box-shadow: 0 0 5px rgba(177, 105, 213, 0.8),
+    0 0 10px rgba(177, 105, 213, 0.6), 0 0 15px rgba(177, 105, 213, 0.4),
+    0 0 20px rgba(177, 105, 213, 0.2);
+  border-radius: 10px;
+  font-family: "Arial", sans-serif;
+}
+
+.landing-header-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  opacity: 0.75;
+}
+
+.landing-header-words {
+  font-family: "Satisfy", cursive;
+  color: #ffffff;
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  display: inline-block;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5),
+    /* Soft gold glow */ 0 0 20px rgba(255, 215, 0, 0.4),
+    /* Slightly stronger glow */ 0 0 30px rgba(255, 215, 0, 0.3),
+    /* More intense glow */ 0 0 40px rgba(255, 215, 0, 0.2); /* Strong outer glow */
+}
+
+.landing-header-words2 {
+  font-family: "Neon", sans-serif;
+  font-family: "Orbitron", sans-serif;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  display: inline-block;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.4),
+    0 0 30px rgba(255, 215, 0, 0.3), 0 0 40px rgba(255, 215, 0, 0.2);
+}
+
+@media (max-width: 576px) {
+  .landing-header-words {
+    font-size: 1.25rem;
+  }
+}
+
+/* button parent container */
+.main-create-account {
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+}
+
+.button {
+  background-color: rgb(17, 17, 17);
+  color: rgb(255, 255, 255);
+  padding: 10px 20px;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  text-decoration: none;
+  font-size: 1rem;
+  text-align: center;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+}
+
+@media (min-width: 576px) {
+  .container-max-width {
+    max-width: 800px;
+  }
+}
+
+.reasons-why {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-row-reasons-why,
+.bottom-reasons-why {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+@media (max-width: 576px) {
+  .top-row-reasons-why,
+  .bottom-reasons-why {
+    flex-direction: column;
+  }
+}
+
+.reason-why-1,
+.reason-why-2,
+.reason-why-3,
+.reason-why-4 {
+  flex: 1;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 2px solid rgb(177, 105, 213);
+  border-radius: 10px;
+  text-align: center;
+  min-width: 0;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background-color: rgb(39, 39, 38);
+  font-size: 1rem;
+  margin-bottom: 5px;
+  box-shadow: 0 0 5px rgba(177, 105, 213, 0.8),
+    0 0 10px rgba(177, 105, 213, 0.6), 0 0 15px rgba(177, 105, 213, 0.4),
+    0 0 20px rgba(177, 105, 213, 0.2);
+}
+
+@media (max-width: 576px) {
+  .reason-why-1,
+  .reason-why-2,
+  .reason-why-3,
+  .reason-why-4 {
+    font-size: 0.75rem;
+  }
+}
+
+/* container for the scrolling movie list */
+#scrolling-movie-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* movie Card Styles */
+.movie-card {
+  flex: 1 1 150px;
+  max-width: 150px;
+  border: 1px solid #000000;
+  border-radius: 5px;
+}
+
+.card-img-top {
+  width: 100%;
+  height: auto;
+}
+
+.card-title {
+  font-size: 0.8rem;
+  text-align: center;
+  margin: 0;
+}
+
+@media (max-width: 576px) {
+  .movie-card {
+    max-width: 80px;
+  }
+  .card-title {
+    font-size: 0.5rem;
+  }
+}
+
+/* styling for recent reviews*/
+.recent-reviews {
+  margin-top: 10px;
+  width: 100%;
+  padding: 0px;
+  background-color: #000000;
+  border: 2px solid #000000;
+  border-radius: 1px;
+}
+
+.box-of-reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  color: #fdfcfc;
+}
+
+.review-slot {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.review-card {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  height: 100px;
+  border: 1px solid #000000;
+  overflow: hidden;
+  background-color: #fdfcfc;
+  color: #461313;
+}
+
+.review-img {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.review-body {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  width: calc(100% - 150px);
+}
+
+.review-username,
+.review-rating,
+.review-critique {
+  margin: 0;
+}
+
+.review-username {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.review-rating {
+  color: #f39c12;
+}
+
+.review-critique {
+  font-size: 0.7em;
+}
+
+.review-content-landing {
+  color: #111111;
+}
+
+/* need animation to make scrolling-movies infinitely loop across page */
