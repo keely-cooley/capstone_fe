@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useUserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import "../css/SignUpPage.css";
+import UserStatus from "./UserStatus";
 
 function SignUpForm() {
   const [userEmail, setUserEmail] = useState("");
@@ -66,7 +67,7 @@ function SignUpForm() {
 
           handleUpdateUser({ email: userEmail, username: username });
           console.log("NEW USER LOGGING IN:", currentUser);
-          
+
           //redirect to dashboard
           navigate("/dashboard");
         } else {
@@ -80,20 +81,13 @@ function SignUpForm() {
     console.log("handleSubmit:", "passwordCount:", passwordCount);
   };
 
-  if (currentUser.username)
-    return (
-      <>
-        <p>Hi, {currentUser.username}! You are currently logged in.</p>
-        <button className="button" onClick={() => handleUpdateUser({})}>
-          Log Out
-        </button>
-      </>
-    );
-
   return (
     <div className="SignUpForm componentBox">
       <h2 className="login-header">Sign Up</h2>
-      {showForm && (
+
+      <UserStatus /> {/* displays alternative message if user is already logged in*/}
+
+      {showForm && !currentUser.username && ( //if user is not logged in, display sign up form
         <form onSubmit={handleSubmit}>
           <div className="formRow">
             <label>

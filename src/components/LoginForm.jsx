@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+// import UserStatus from "./UserStatus";
 
 function LoginForm() {
   const [userEmail, setUserEmail] = useState("");
@@ -26,32 +27,26 @@ function LoginForm() {
       // console.log(data)
 
       if (response.ok) {
-        const { email, username } = data;
-
-        console.log("USER EMAIL: ", email);
-        console.log("USERNAME: ", username);
-        handleUpdateUser({ email, username });
-        // console.log("LOGGING IN:", currentUser);
+        console.log("LoginForm.jsx - USER LOGIN: ", userEmail);
+        handleUpdateUser({ email: userEmail });
 
         //redirect to dashboard on successful login
-        navigate("/dashboard");
+        setSubmitResult("");
       } else {
         console.log(data);
         setSubmitResult(data);
       }
     } catch (error) {
-      console.log("LoginForm.jsx : an error occurred during login", error)
+      console.log("LoginForm.jsx : an error occurred during login", error);
       setSubmitResult("An error occurred during login. ", error);
     }
   };
 
-  if (currentUser.email)
-    return (
-      <>
-        <p>Hi, {currentUser.username}! You are currently logged in.</p>
-        <button className="button" onClick={() => handleUpdateUser({})}>Log Out</button>
-      </>
-    );
+  useEffect(() => {
+    if (currentUser?.email) {
+      navigate("/dashboard");
+    }
+  }, [currentUser, navigate])
 
   return (
     <div className="LoginForm componentBox">
