@@ -31,7 +31,7 @@ const LandingMovie = () => {
     <div id="scrolling-movie-list">
       {movies.map((movie) => (
         <div onClick={() => handleMovieClick(movie.id)} className="movie-card card m-2" key={movie.id}>
-          <img className="card-img-top" src={movie.image} alt={movie.title} />
+          <img className="card-img-top" src={movie.img} alt={movie.title} />
           <div className="card-body">
             <h5 className="card-title">{movie.title}</h5>
           </div>

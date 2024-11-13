@@ -1,25 +1,25 @@
 import { useEffect, useState } from "react";
 import "../css/LandingPage.css";
 
-const LandingPost = () => {
-  const [posts, setPosts] = useState([]);
+const LandingReview = () => {
+  const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchReviews = async () => {
       try {
-        const response = await fetch("http://localhost:8083/landingPost");
+        const response = await fetch("http://localhost:8083/reviews");
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
         console.log(data.result);
-        setPosts(data.result);
+        setReviews(data.result);
       } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error("Error fetching reviews:", error);
       }
     };
 
-    fetchPosts();
+    fetchReviews();
   }, []);
 
   return (
@@ -27,13 +27,13 @@ const LandingPost = () => {
       <div className="box-of-reviews">
         <p className="review-header">Recent Reviews</p>
         <div className="review-slot" id="review-slot">
-          {posts.map((post) => (
-            <div className="review-card" key={post.id}>
-              <img src={post.image} className="review-img" alt="Review" />
+          {reviews.map((review) => (
+            <div className="review-card" key={review.id}>
+              {/* <img src={review.image} className="review-img" alt="Review" /> */}
               <div className="review-body">
-                <p className="review-username">{post.username}</p>
-                <p className="review-rating">{post.rating}</p>
-                <p className="review-content-landing">{post.content}</p>
+                <p className="review-username">{review.userId}</p>
+                <p className="review-rating">{review.rating}</p>
+                <p className="review-content-landing">{review.content}</p>
               </div>
             </div>
           ))}
@@ -43,4 +43,4 @@ const LandingPost = () => {
   );
 };
 
-export default LandingPost;
+export default LandingReview;

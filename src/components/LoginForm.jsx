@@ -23,6 +23,7 @@ function LoginForm() {
       });
 
       const data = await response.json();
+      console.log(data)
 
       if (response.ok) {
         console.log("USER EMAIL:", userEmail);
@@ -34,6 +35,7 @@ function LoginForm() {
         setSubmitResult(data.result);
       }
     } catch (error) {
+      console.log("LoginForm.jsx : an error occurred during login", error)
       setSubmitResult("An error occurred during login. ", error);
     }
   };
