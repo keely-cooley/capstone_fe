@@ -23,16 +23,21 @@ function LoginForm() {
       });
 
       const data = await response.json();
-      console.log(data)
+      // console.log(data)
 
       if (response.ok) {
-        console.log("USER EMAIL:", userEmail);
-        handleUpdateUser({ email: userEmail });
-        console.log("LOGGING IN:", currentUser);
+        const { email, username } = data;
+
+        console.log("USER EMAIL: ", email);
+        console.log("USERNAME: ", username);
+        handleUpdateUser({ email, username });
+        // console.log("LOGGING IN:", currentUser);
+
         //redirect to dashboard on successful login
         navigate("/dashboard");
       } else {
-        setSubmitResult(data.result);
+        console.log(data);
+        setSubmitResult(data);
       }
     } catch (error) {
       console.log("LoginForm.jsx : an error occurred during login", error)
@@ -43,8 +48,8 @@ function LoginForm() {
   if (currentUser.email)
     return (
       <>
-        <p>Welcome {currentUser.email}</p>
-        <button onClick={() => handleUpdateUser({})}>Log Out</button>
+        <p>Hi, {currentUser.username}! You are currently logged in.</p>
+        <button className="button" onClick={() => handleUpdateUser({})}>Log Out</button>
       </>
     );
 
@@ -75,7 +80,7 @@ function LoginForm() {
             />
           </label>
         </div>
-        <button>Log In</button>
+        <button className="button">Log In</button>
         <p>{submitResult}</p>
       </form>
     </div>
