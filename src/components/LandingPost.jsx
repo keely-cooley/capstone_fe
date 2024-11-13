@@ -12,8 +12,8 @@ const LandingReview = () => {
           throw new Error("Network response was not ok");
         }
         const data = await response.json();
-        console.log(data.result);
-        setReviews(data.result);
+        console.log("LandingReview", data);
+        setReviews(data);
       } catch (error) {
         console.error("Error fetching reviews:", error);
       }
@@ -31,7 +31,7 @@ const LandingReview = () => {
             <div className="review-card" key={review.id}>
               {/* <img src={review.image} className="review-img" alt="Review" /> */}
               <div className="review-body">
-                <p className="review-username">{review.userId}</p>
+                <p className="review-username">{review.username}</p>
                 <p className="review-rating">{review.rating}</p>
                 <p className="review-content-landing">{review.content}</p>
               </div>
