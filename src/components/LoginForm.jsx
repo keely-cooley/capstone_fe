@@ -34,7 +34,7 @@ function LoginForm() {
         setSubmitResult("");
       } else {
         console.log(data);
-        setSubmitResult(data);
+        setSubmitResult(data.message || "Login failed.");
       }
     } catch (error) {
       console.log("LoginForm.jsx : an error occurred during login", error);
