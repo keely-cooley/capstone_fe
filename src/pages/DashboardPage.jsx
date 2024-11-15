@@ -12,13 +12,13 @@ import PostList from "../components/PostList";
 import "../css/DashboardPage.css";
 
 function DashboardPage() {
-  //CONDITIONAL RENDERING (cont. lines 74-86)
   //check to see if the user is logged in
   const { currentUser } = useUserContext();
 
   //STATE variables
   const [movies, setMovies] = useState([]);
   const [myList, setMyList] = useState([]);
+  const [seenList, setSeenList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [userPosts, setUserPosts] = useState([]);
 
@@ -39,38 +39,39 @@ function DashboardPage() {
     }
   };
 
-  // MOUNTING
   useEffect(() => {
-    getMovieRequest(searchValue); // Fetch movies on mount if searchValue is not empty
-  }); // Runs only once on mount
+    getMovieRequest(searchValue); // fetch movies on mount if searchValue is not empty
+  }); // runs only once on mount
 
-  // UPDATING
   useEffect(() => {
     if (searchValue) {
       getMovieRequest(searchValue);
     }
   }, [searchValue]); // Runs when searchValue changes
 
-  // load user's watch list from local storage
+  // load user's watch list and seen list from local storage
   useEffect(() => {
     const movieList =
       JSON.parse(localStorage.getItem("cinnefiles-my-list")) || [];
+      const seenMovies = JSON.parse(localStorage.getItem("cinnefiles-seen-list")) || [];
     setMyList(movieList);
+    setSeenList(seenMovies);
   }, []);
 
-  // save user's watch list to local storage
+  // save user's watch list and seen list to local storage
   const saveToLocalStorage = (items) => {
     localStorage.setItem("cinnefiles-my-list", JSON.stringify(items));
+    localStorage.setItem("cinnefiles-seen-list", JSON.stringify(seenList))
   };
 
-  //add movie to list
+  //add movie to 'my list'
   const addMovieToList = (movie) => {
     const newMyList = [...myList, movie];
     setMyList(newMyList);
     saveToLocalStorage(newMyList);
   };
 
-  //remove movie from list
+  //remove movie from 'my list'
   //filter out movie from current list
   const removeMovie = (movie) => {
     console.log("removeMovie", myList, movie);
