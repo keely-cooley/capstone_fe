@@ -66,7 +66,7 @@ function PostForm({ setUserPosts }) {
             />
           </label>
         </div>
-        <button>Add Review</button>
+        <button className="button">Add Review</button>
       </form>
     </div>
   );
