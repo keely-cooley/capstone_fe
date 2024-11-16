@@ -80,17 +80,25 @@ function DashboardPage() {
   };
 
   // remove movie from 'seen list'
-  const removeMovie = (movie) => {
+  const removeSeenMovie = (movie) => {
     console.log("Removing movie:", movie);
-    setMyList((seenList) => {
-      console.log("Current seenList:", seenList);
-      const newSeenList = seenList.filter(
-        (listed) => listed.imdbID !== movie.imdbID
-      );
-      console.log("New seenList:", newSeenList);
-      saveToLocalStorage(newSeenList);
-      return newSeenList;
-    });
+    const newSeenList = seenList.filter(
+      (listed) => listed.imdbID !== movie.imdbID
+    );
+    console.log(newSeenList);
+    setSeenList(newSeenList);
+    saveToLocalStorage();
+  };
+
+  // remove from 'my list'
+  const removeListMovie = (movie) => {
+    console.log("Removing movie:", movie);
+    const newMyList = myList.filter(
+      (listed) => listed.imdbID !== movie.imdbID
+    );
+    console.log(newMyList);
+    setMyList(newMyList);
+    saveToLocalStorage();
   };
 
   // CONDITIONAL RENDERING - Check if user is logged in
@@ -134,6 +142,7 @@ function DashboardPage() {
             movies={movies}
             addMovieToList={addMovieToList}
             addMovieToSeen={addMovieToSeen}
+            removeMovie={null}
             // myListComponent={AddMyList}
           />
         </div>
@@ -147,8 +156,9 @@ function DashboardPage() {
         <div className="row">
           <MovieList
             movies={myList}
-            addMovieToList={addMovieToList}
+            addMovieToList={null}
             addMovieToSeen={addMovieToSeen}
+            removeMovie={removeListMovie}
           />
         </div>
 
@@ -161,8 +171,9 @@ function DashboardPage() {
         <div className="row">
           <MovieList
             movies={seenList}
-            addMovieToList={addMovieToList}
-            addMovieToSeen={addMovieToSeen}
+            addMovieToList={null}
+            addMovieToSeen={null}
+            removeMovie={removeSeenMovie}
           />
         </div>
       </div>
