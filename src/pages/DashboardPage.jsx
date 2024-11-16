@@ -46,15 +46,31 @@ function DashboardPage() {
     }
   }, [searchValue]);
 
-  // load user's watch list and seen list from local storage
+  //any time the page loads, load my list from database
   useEffect(() => {
-    const movieList =
-      JSON.parse(localStorage.getItem("cinnefiles-my-list")) || [];
-    const seenMovies =
-      JSON.parse(localStorage.getItem("cinnefiles-seen-list")) || [];
-    setMyList(movieList);
-    setSeenList(seenMovies);
-  }, []);
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8083/listedMovies/user/${currentUser.userId}`
+        );
+        const data = await response.json();
+        setMyList(data);
+      } catch (error) {
+        console.log("DashboardPage.jsx.jsx : an error occurred", error);
+      }
+    };
+    fetchData();
+  }, [currentUser.userId]);
+
+  // load user's watch list and seen list from local storage
+  // useEffect(() => {
+  //   const movieList =
+  //     JSON.parse(localStorage.getItem("cinnefiles-my-list")) || [];
+  //   const seenMovies =
+  //     JSON.parse(localStorage.getItem("cinnefiles-seen-list")) || [];
+  //   setMyList(movieList);
+  //   setSeenList(seenMovies);
+  // }, []);
 
   // save both lists to localStorage
   const saveToLocalStorage = () => {
