@@ -63,10 +63,41 @@ function DashboardPage() {
   };
 
   // add movie to 'my list'
-  const addMovieToList = (movie) => {
+  const addMovieToList = async (movie) => {
     const newMyList = [...myList, movie];
     setMyList(newMyList);
-    saveToLocalStorage();
+    // saveToLocalStorage();
+    console.log("addMovieToList", currentUser.userId);
+    try {
+      const response = await fetch(
+        `http://localhost:8083/movies/validate/${movie.imdbID}`
+      );
+      const responseJson = await response.json();
+      console.log(responseJson.id);
+      if (response.ok) {
+        const newListedMovie = {
+          userId: currentUser.userId,
+          movieId: responseJson.id,
+        };    
+        try {
+          const response = await fetch("http://localhost:8083/listedMovies", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(newListedMovie),
+          });
+          console.log(response);
+        } catch (error) {
+          console.log(
+            "addMovieToList: an error occured adding movie to you list",
+            error
+          );
+        }
+      }
+    } catch (error) {
+      console.log("setMyList - validate movie", error);
+    }
   };
 
   // add movie to 'seen list' and remove from 'my list'
@@ -93,9 +124,7 @@ function DashboardPage() {
   // remove from 'my list'
   const removeListMovie = (movie) => {
     console.log("Removing movie:", movie);
-    const newMyList = myList.filter(
-      (listed) => listed.imdbID !== movie.imdbID
-    );
+    const newMyList = myList.filter((listed) => listed.imdbID !== movie.imdbID);
     console.log(newMyList);
     setMyList(newMyList);
     saveToLocalStorage();
