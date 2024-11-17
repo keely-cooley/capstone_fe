@@ -1,13 +1,9 @@
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useUserContext } from "../context/UserContext";
-// import { Link } from "react-router-dom";
 import MovieList from "../components/MovieList";
 import MovieListHeading from "../components/MovieListHeading";
 import SearchBox from "../components/SearchBox";
-// import AddMyList from "../components/AddMyList";
-// import AddSeenList from "../components/AddSeenList";
-// import RemoveMyList from "../components/RemoveMyList";
 import PostForm from "../components/PostForm";
 import PostList from "../components/PostList";
 import "../css/DashboardPage.css";
@@ -23,6 +19,7 @@ function DashboardPage() {
   const [searchValue, setSearchValue] = useState("");
   const [userPosts, setUserPosts] = useState([]);
 
+  //search for movies
   const getMovieRequest = async (searchValue) => {
     // make request to API
     const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=2aa94c15`;
@@ -32,45 +29,43 @@ function DashboardPage() {
       // convert response to JSON
       const responseJson = await response.json();
       console.log(responseJson);
-  
+
       // UPDATING STATE - updates movies state when movie data is fetched successfully
       if (responseJson.Search) {
-        setMovies(responseJson.Search);
+        console.log(responseJson);
+        const convertedMovies = [];
+
+        responseJson.Search.forEach(async (movie) => {
+          //movie details not included in API initial search
+          const details = {
+            genre: "",
+            director: "",
+            runtime: "",
+            rating: null,
+          };
+
+          convertedMovies.push({
+            imdbID: movie.imdbID || "",
+            title: movie.Title || "",
+            year: movie.Year || "",
+            genre: details.genre,
+            director: details.director,
+            runtime: details.runtime,
+            rating: details.rating,
+            img: movie.Poster || "",
+          });
+          //confirms array is the same length and all movies are converted before updating state
+          if (convertedMovies.length === responseJson.Search.length) {
+            console.log(convertedMovies);
+            setMovies(convertedMovies);
+          }
+        });
       } else {
-        console.log("No movies found.")
+        console.log("No movies found.");
       }
     } catch (error) {
-      console.log("Error fetching movies:", error)
+      console.log("Error fetching movies:", error);
     }
-  };
-
-  // useEffect to fetch movies based on searchValue
-  useEffect(() => {
-    if (searchValue) {
-      getMovieRequest(searchValue);
-    }
-  }, [searchValue]);
-
-  //any time the page loads, load my list from database
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8083/listedMovies/user/${currentUser.userId}`
-        );
-        const data = await response.json();
-        setMyList(data);
-      } catch (error) {
-        console.log("DashboardPage.jsx.jsx : an error occurred", error);
-      }
-    };
-    fetchData();
-  }, [currentUser.userId]);
-
-  // save both lists to localStorage
-  const saveToLocalStorage = () => {
-    localStorage.setItem("cinnefiles-my-list", JSON.stringify(myList));
-    localStorage.setItem("cinnefiles-seen-list", JSON.stringify(seenList));
   };
 
   // add movie to 'my list'
@@ -139,7 +134,7 @@ function DashboardPage() {
 
     setMyList(newMyList);
     setSeenList(newSeenList);
-    saveToLocalStorage();
+    // saveToLocalStorage();
   };
 
   // remove movie from 'seen list'
@@ -150,7 +145,7 @@ function DashboardPage() {
     );
     console.log(newSeenList);
     setSeenList(newSeenList);
-    saveToLocalStorage();
+    // saveToLocalStorage();
   };
 
   // remove from 'my list'
@@ -159,29 +154,31 @@ function DashboardPage() {
     const newMyList = myList.filter((listed) => listed.imdbID !== movie.imdbID);
     console.log(newMyList);
     setMyList(newMyList);
-    saveToLocalStorage();
+    // saveToLocalStorage();
   };
 
-  // // CONDITIONAL RENDERING - Check if user is logged in
-  // const isLoggedIn = currentUser.email;
+  // useEffect to fetch movies based on searchValue
+  useEffect(() => {
+    if (searchValue) {
+      getMovieRequest(searchValue);
+    }
+  }, [searchValue]);
 
-  // if (!isLoggedIn) {
-  //   return (
-  //     <div>
-  //       <p>
-  //         You need to log in to view this page. Would you like to create a free
-  //         Cinnefiles account?
-  //       </p>
-  //       <Link to="/signUp" className="btn btn-primary">
-  //         Create My Free Account!
-  //       </Link>
-  //       <p>Already have an account?</p>
-  //       <Link to="/login" className="btn btn-primary">
-  //         Sign in here!
-  //       </Link>
-  //     </div>
-  //   );
-  // }
+  //any time the page loads, load 'my list' from database
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8083/listedMovies/user/${currentUser.userId}`
+        );
+        const data = await response.json();
+        setMyList(data);
+      } catch (error) {
+        console.log("DashboardPage.jsx.jsx : an error occurred", error);
+      }
+    };
+    fetchData();
+  }, [currentUser.userId]);
 
   return (
     <>
@@ -204,7 +201,6 @@ function DashboardPage() {
             addMovieToList={addMovieToList}
             addMovieToSeen={addMovieToSeen}
             removeMovie={null}
-            // myListComponent={AddMyList}
           />
         </div>
 

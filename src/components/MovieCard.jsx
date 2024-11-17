@@ -8,8 +8,8 @@ const MovieCard = (props) => {
     <>
       <div className=" image-container">
         <img
-          src={movie.img}
-          alt={movie.title}
+          src={movie.Poster}
+          alt={movie.Title}
           className="movie-poster"
         ></img>
         <div className="overlay d-flex align-items-center justify-content-center">

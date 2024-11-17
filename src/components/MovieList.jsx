@@ -10,7 +10,7 @@ const MovieList = (props) => {
         {props.movies.map((movie) => (
           <MovieCard
             movie={movie}
-            key={movie.id}
+            key={movie.imdbID}
             addMovieToList={addMovieToList}
             addMovieToSeen={addMovieToSeen}
             removeMovie={removeMovie}
