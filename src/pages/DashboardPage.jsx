@@ -156,11 +156,7 @@ function DashboardPage() {
 
       if (addMovieResponse.ok) {
         console.log("Movie successfully added to your seen list!");
-        removeListMovie(movie);
-        const updatedMyList = myList.filter(
-          (item) => item.imdbID !== movie.imdbID
-        );
-        setMyList(updatedMyList);
+        await removeListMovie(movie);
         await fetchMyList();
         await fetchSeenList();
       } else {
@@ -213,6 +209,7 @@ function DashboardPage() {
       );
       if (deleteMyListResponse.ok) {
         console.log("Movie successfully removed from your list!");
+        await fetchMyList()
       } else {
         console.log("Failed to remove movie from my list");
         console.log("Delete movie error", deleteMyListResponse)
