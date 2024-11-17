@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { useUserContext } from "../context/UserContext";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import MovieList from "../components/MovieList";
 import MovieListHeading from "../components/MovieListHeading";
 import SearchBox from "../components/SearchBox";
-import AddMyList from "../components/AddMyList";
-import AddSeenList from "../components/AddSeenList";
-import RemoveMyList from "../components/RemoveMyList";
+// import AddMyList from "../components/AddMyList";
+// import AddSeenList from "../components/AddSeenList";
+// import RemoveMyList from "../components/RemoveMyList";
 import PostForm from "../components/PostForm";
 import PostList from "../components/PostList";
 import "../css/DashboardPage.css";
@@ -27,15 +27,20 @@ function DashboardPage() {
     // make request to API
     const url = `http://www.omdbapi.com/?s=${searchValue}&apikey=2aa94c15`;
 
-    const response = await fetch(url);
-    // convert response to JSON
-    const responseJson = await response.json();
-
-    console.log(responseJson);
-
-    // UPDATING STATE - updates movies state when movie data is fetched successfully
-    if (responseJson.Search) {
-      setMovies(responseJson.Search);
+    try {
+      const response = await fetch(url);
+      // convert response to JSON
+      const responseJson = await response.json();
+      console.log(responseJson);
+  
+      // UPDATING STATE - updates movies state when movie data is fetched successfully
+      if (responseJson.Search) {
+        setMovies(responseJson.Search);
+      } else {
+        console.log("No movies found.")
+      }
+    } catch (error) {
+      console.log("Error fetching movies:", error)
     }
   };
 
@@ -62,16 +67,6 @@ function DashboardPage() {
     fetchData();
   }, [currentUser.userId]);
 
-  // load user's watch list and seen list from local storage
-  // useEffect(() => {
-  //   const movieList =
-  //     JSON.parse(localStorage.getItem("cinnefiles-my-list")) || [];
-  //   const seenMovies =
-  //     JSON.parse(localStorage.getItem("cinnefiles-seen-list")) || [];
-  //   setMyList(movieList);
-  //   setSeenList(seenMovies);
-  // }, []);
-
   // save both lists to localStorage
   const saveToLocalStorage = () => {
     localStorage.setItem("cinnefiles-my-list", JSON.stringify(myList));
@@ -80,36 +75,57 @@ function DashboardPage() {
 
   // add movie to 'my list'
   const addMovieToList = async (movie) => {
+    //check if movie already exists in 'my list'
+    if (myList.some((check) => check.imdbID === movie.imdbID)) {
+      console.log("Movie is already in your list");
+      return; //?? what should I return here to display already in list to user
+    }
+
     const newMyList = [...myList, movie];
     setMyList(newMyList);
     // saveToLocalStorage();
     console.log("addMovieToList", currentUser.userId);
+
     try {
-      const response = await fetch(
+      //validate the movie
+      const validationResponse = await fetch(
         `http://localhost:8083/movies/validate/${movie.imdbID}`
       );
-      const responseJson = await response.json();
-      console.log(responseJson.id);
-      if (response.ok) {
+      const validationJson = await validationResponse.json();
+      console.log(validationJson.id);
+      if (validationResponse.ok) {
+        //create new listed movie object
         const newListedMovie = {
           userId: currentUser.userId,
-          movieId: responseJson.id,
-        };    
+          movieId: validationJson.id,
+        };
         try {
-          const response = await fetch("http://localhost:8083/listedMovies", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(newListedMovie),
-          });
-          console.log(response);
+          //add movie to listedMovies table
+          const addMovieResponse = await fetch(
+            "http://localhost:8083/listedMovies",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(newListedMovie),
+            }
+          );
+          console.log(addMovieResponse);
+
+          if (addMovieResponse.ok) {
+            console.log("Movie successfully added to your list!");
+          } else {
+            console.log("Failed to add movie to list");
+          }
         } catch (error) {
           console.log(
-            "addMovieToList: an error occured adding movie to you list",
+            "addMovieToList: an error occurred while adding movie to you list",
             error
           );
         }
+      } else {
+        console.log("movie validation failed");
       }
     } catch (error) {
       console.log("setMyList - validate movie", error);
@@ -146,26 +162,26 @@ function DashboardPage() {
     saveToLocalStorage();
   };
 
-  // CONDITIONAL RENDERING - Check if user is logged in
-  const isLoggedIn = currentUser.email;
+  // // CONDITIONAL RENDERING - Check if user is logged in
+  // const isLoggedIn = currentUser.email;
 
-  if (!isLoggedIn) {
-    return (
-      <div>
-        <p>
-          You need to log in to view this page. Would you like to create a free
-          Cinnefiles account?
-        </p>
-        <Link to="/signUp" className="btn btn-primary">
-          Create My Free Account!
-        </Link>
-        <p>Already have an account?</p>
-        <Link to="/login" className="btn btn-primary">
-          Sign in here!
-        </Link>
-      </div>
-    );
-  }
+  // if (!isLoggedIn) {
+  //   return (
+  //     <div>
+  //       <p>
+  //         You need to log in to view this page. Would you like to create a free
+  //         Cinnefiles account?
+  //       </p>
+  //       <Link to="/signUp" className="btn btn-primary">
+  //         Create My Free Account!
+  //       </Link>
+  //       <p>Already have an account?</p>
+  //       <Link to="/login" className="btn btn-primary">
+  //         Sign in here!
+  //       </Link>
+  //     </div>
+  //   );
+  // }
 
   return (
     <>
