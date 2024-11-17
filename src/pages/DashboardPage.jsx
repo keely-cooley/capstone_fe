@@ -127,50 +127,45 @@ function DashboardPage() {
   };
 
   // add movie to 'seen list' and remove from 'my list'
-const addMovieToSeen = async (movie) => {
-  try {
-    // create new movie object
-    const newSeenMovie = {
-      userId: currentUser.userId,
-      movieId: movie.imdbID,
-    };
+  const addMovieToSeen = async (movie) => {
+    try {
+      //check if movie already exists in 'seen list'
+      if (seenList.some((check) => check.imdbID === movie.imdbID)) {
+        console.log("Movie is already in seen list");
+        return; //?? what should I return here to display already in list to user
+      }
+      // create new movie object
+      const newSeenMovie = {
+        userId: currentUser.userId,
+        movieId: movie.imdbID,
+      };
 
-    // add movie to seen list: POST request
-    const addMovieResponse = await fetch("http://localhost:8083/seenMovies", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newSeenMovie),
-    });
+      // add movie to seen list: POST request
+      const addMovieResponse = await fetch("http://localhost:8083/seenMovies", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newSeenMovie),
+      });
 
-    if (addMovieResponse.ok) {
-      console.log("Movie successfully added to your seen list!");
-    } else {
-      console.log("Failed to add movie to seen list");
+      if (addMovieResponse.ok) {
+        console.log("Movie successfully added to your seen list!");
+      } else {
+        console.log("Failed to add movie to seen list");
+      }
+
+      // remove the movie from 'my list'
+      const newMyList = myList.filter((item) => item.imdbID !== movie.imdbID);
+      setMyList(newMyList);
+
+      // update state after the POST request
+      const newSeenList = [...seenList, movie];
+      setSeenList(newSeenList);
+    } catch (error) {
+      console.log("Error occurred while processing movie:", error);
     }
-
-    // remove the movie from 'my list'
-    const newMyList = myList.filter((item) => item.imdbID !== movie.imdbID);
-    setMyList(newMyList);
-
-    // update state after the POST request
-    const newSeenList = [...seenList, movie];
-    setSeenList(newSeenList);
-
-  } catch (error) {
-    console.log("Error occurred while processing movie:", error);
-  }
-};
-
-  // // add movie to 'seen list' and remove from 'my list'
-  // const addMovieToSeen = (movie) => {
-  //   const newMyList = myList.filter((item) => item.imdbID !== movie.imdbID);
-  //   const newSeenList = [...seenList, movie];
-
-  //   setMyList(newMyList);
-  //   setSeenList(newSeenList);
-  // };
+  };
 
   // remove movie from 'seen list'
   const removeSeenMovie = (movie) => {
@@ -182,13 +177,47 @@ const addMovieToSeen = async (movie) => {
     setSeenList(newSeenList);
   };
 
-  // remove from 'my list'
-  const removeListMovie = (movie) => {
-    console.log("Removing movie:", movie);
-    const newMyList = myList.filter((listed) => listed.imdbID !== movie.imdbID);
-    console.log(newMyList);
-    setMyList(newMyList);
-  };
+  //remove movie from 'my list'
+  const removeListMovie = async (movie) => {
+    //check if movie exists
+    const movieInList = myList.find((check) => check.imdbID === movie.imdbID);
+
+    if (!movieInList) {
+      console.log("Movie is not in your list")
+      return;
+    }
+
+    //get movie id
+    const movieIdToRemove = movieInList.id;
+    
+    //remove movie from list
+    try {
+      console.log(movieIdToRemove)
+      const deleteMyListResponse = await fetch(`http://localhost:8083/listedMovies/${movieIdToRemove}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (deleteMyListResponse.ok) {
+        console.log("Movie successfully removed from your list!");
+
+        const updatedMyList = myList.filter((movie) => movie.imdbID !== movieInList.imdbID);
+        setMyList(updatedMyList);
+      } else {
+        console.log("Failed to remove movie from my list");
+      }
+    } catch (error) {
+      console.log("Error occured while removing movie from your list:", error)
+    }
+  }
+
+  // // remove from 'my list'
+  // const removeListMovie = (movie) => {
+  //   console.log("Removing movie:", movie);
+  //   const newMyList = myList.filter((listed) => listed.imdbID !== movie.imdbID);
+  //   console.log(newMyList);
+  //   setMyList(newMyList);
+  // };
 
   // useEffect to fetch movies based on searchValue
   useEffect(() => {
