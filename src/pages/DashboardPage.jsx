@@ -142,7 +142,7 @@ function DashboardPage() {
       // create new movie object
       const newSeenMovie = {
         userId: currentUser.userId,
-        movieId: movie.imdbID,
+        movieId: movie.id,
       };
 
       // add movie to seen list: POST request
@@ -156,17 +156,17 @@ function DashboardPage() {
 
       if (addMovieResponse.ok) {
         console.log("Movie successfully added to your seen list!");
+        removeListMovie(movie);
+        const updatedMyList = myList.filter(
+          (item) => item.imdbID !== movie.imdbID
+        );
+        setMyList(updatedMyList);
+        await fetchMyList();
+        await fetchSeenList();
       } else {
         console.log("Failed to add movie to seen list");
       }
 
-      // remove the movie from 'my list'
-      const newMyList = myList.filter((item) => item.imdbID !== movie.imdbID);
-      setMyList(newMyList);
-
-      // update state after the POST request
-      const newSeenList = [...seenList, movie];
-      setSeenList(newSeenList);
     } catch (error) {
       console.log("Error occurred while processing movie:", error);
     }
@@ -213,9 +213,6 @@ function DashboardPage() {
       );
       if (deleteMyListResponse.ok) {
         console.log("Movie successfully removed from your list!");
-
-        const updatedMyList = myList.filter((movie) => movie.imdbID !== movie.imdbID);
-        setMyList(updatedMyList);
       } else {
         console.log("Failed to remove movie from my list");
         console.log("Delete movie error", deleteMyListResponse)
@@ -246,16 +243,36 @@ function DashboardPage() {
         `http://localhost:8083/listedMovies/user/${currentUser.userId}`
       );
       const data = await response.json();
+      console.log("Updating My List")
       setMyList(data);
     } catch (error) {
       console.log("DashboardPage.jsx.jsx : an error occurred", error);
     }
   };
 
+  const fetchSeenList = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8083/seenMovies/user/${currentUser.userId}`
+      );
+      const data = await response.json();
+      setSeenList(data);
+    } catch (error) {
+      console.log("DashboardPage.jsx.jsx : an error occurred", error);
+    }
+  };
+
+
   //any time the page loads, load 'my list' from database
   useEffect(() => {
     fetchMyList();
   }, [currentUser.userId]);
+
+    //any time the page loads, load 'seen list' from database
+  useEffect(() => {
+    fetchSeenList();
+  }, [currentUser.userId]);
+
 
   return (
     <>
