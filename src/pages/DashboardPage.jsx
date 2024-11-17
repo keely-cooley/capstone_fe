@@ -76,8 +76,8 @@ function DashboardPage() {
       return; //?? what should I return here to display already in list to user
     }
 
-    const newMyList = [...myList, movie];
-    setMyList(newMyList);
+    // const newMyList = [...myList, movie];
+    // setMyList(newMyList);
     console.log("addMovieToList", currentUser.userId);
 
     try {
@@ -86,12 +86,16 @@ function DashboardPage() {
         `http://localhost:8083/movies/validate/${movie.imdbID}`
       );
       const validationJson = await validationResponse.json();
-      console.log(validationJson.id);
+      console.log("ValidationJson:", validationJson);
+      if(!validationJson.data.id) {
+        console.log(validationJson.data.id)
+        return
+      }
       if (validationResponse.ok) {
         //create new listed movie object
         const newListedMovie = {
           userId: currentUser.userId,
-          movieId: validationJson.id,
+          movieId: validationJson.data.id,
         };
         try {
           //add movie to listedMovies table
@@ -109,6 +113,7 @@ function DashboardPage() {
 
           if (addMovieResponse.ok) {
             console.log("Movie successfully added to your list!");
+            fetchMyList()
           } else {
             console.log("Failed to add movie to list");
           }
@@ -119,7 +124,7 @@ function DashboardPage() {
           );
         }
       } else {
-        console.log("movie validation failed");
+        console.log("movie validation failed", validationResponse);
       }
     } catch (error) {
       console.log("setMyList - validate movie", error);
@@ -179,32 +184,41 @@ function DashboardPage() {
 
   //remove movie from 'my list'
   const removeListMovie = async (movie) => {
-    //check if movie exists
-    const movieInList = myList.find((check) => check.imdbID === movie.imdbID);
+    // //check if movie exists
+    // const movieInList = myList.find((check) => check.imdbID === movie.imdbID);
 
-    if (!movieInList) {
-      console.log("Movie is not in your list")
-      return;
-    }
+    // if (!movieInList) {
+    //   console.log("Movie is not in your list")
+    //   return;
+    // }
 
     //get movie id
-    const movieIdToRemove = movieInList.id;
+    console.log("removeListMovie:", movie)
+    const listedMovieToDelete = {
+      userId: currentUser.userId,
+      movieId: movie.id
+    };
     
     //remove movie from list
     try {
-      console.log(movieIdToRemove)
-      const deleteMyListResponse = await fetch(`http://localhost:8083/listedMovies/${movieIdToRemove}`,
+      console.log(listedMovieToDelete)
+      const deleteMyListResponse = await fetch(`http://localhost:8083/listedMovies/userIdAndMovieId`,
         {
           method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+            body: JSON.stringify(listedMovieToDelete),
         }
       );
       if (deleteMyListResponse.ok) {
         console.log("Movie successfully removed from your list!");
 
-        const updatedMyList = myList.filter((movie) => movie.imdbID !== movieInList.imdbID);
+        const updatedMyList = myList.filter((movie) => movie.imdbID !== movie.imdbID);
         setMyList(updatedMyList);
       } else {
         console.log("Failed to remove movie from my list");
+        console.log("Delete movie error", deleteMyListResponse)
       }
     } catch (error) {
       console.log("Error occured while removing movie from your list:", error)
@@ -226,20 +240,21 @@ function DashboardPage() {
     }
   }, [searchValue]);
 
+  const fetchMyList = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8083/listedMovies/user/${currentUser.userId}`
+      );
+      const data = await response.json();
+      setMyList(data);
+    } catch (error) {
+      console.log("DashboardPage.jsx.jsx : an error occurred", error);
+    }
+  };
+
   //any time the page loads, load 'my list' from database
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:8083/listedMovies/user/${currentUser.userId}`
-        );
-        const data = await response.json();
-        setMyList(data);
-      } catch (error) {
-        console.log("DashboardPage.jsx.jsx : an error occurred", error);
-      }
-    };
-    fetchData();
+    fetchMyList();
   }, [currentUser.userId]);
 
   return (
