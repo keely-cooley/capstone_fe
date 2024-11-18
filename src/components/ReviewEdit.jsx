@@ -43,7 +43,7 @@ function EditReview({ review, onUpdate }) {
             onChange={(e) => setContent(e.target.value)}
           />
         </div>
-        <button type="submit">Update Review</button>
+        <button className="button" type="submit">Update Review</button>
       </form>
     </div>
   );

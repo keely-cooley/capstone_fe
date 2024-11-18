@@ -1,5 +1,5 @@
 import LandingMovie from "../components/LandingMovie";
-import LandingPost from "../components/LandingPost";
+import LandingReview from "../components/LandingReview";
 import { Link } from "react-router-dom";
 
 import "../css/LandingPage.css";
@@ -42,7 +42,7 @@ export default function HomePage() {
         </div>
 
         <LandingMovie />
-        <LandingPost />
+        <LandingReview />
       </div>
     </div>
   );

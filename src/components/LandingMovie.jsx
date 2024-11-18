@@ -52,7 +52,7 @@ const LandingMovie = () => {
   return (
     <div id="scrolling-movie-list-container">
       <div id="scrolling-movie-list">
-        {movies.concat(movies).map((movie) => (
+        {movies.map((movie) => (
           <div onClick={() => handleMovieClick(movie.id)} className="movie-card card m-2" key={movie.id}>
             <img className="card-img-top" src={movie.img} alt={movie.title} />
             <div className="card-body">

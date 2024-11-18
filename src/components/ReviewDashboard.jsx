@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import ReviewUser from "./ReviewUser";
+import ReviewCard from "./ReviewCard";
 
 function ReviewList(props) {
   const { userReviews, setUserReviews } = props;
@@ -24,6 +24,7 @@ function ReviewList(props) {
 
   //edit user Review
   const updateUserReview = (updatedReview) => {
+    console.log("ReviewDashboard.jsx - updatedReview:", updatedReview)
     fetch(`http://localhost:8083/reviews/update/${updatedReview.id}`, {
       method: "PUT",
       headers: {
@@ -77,7 +78,7 @@ function ReviewList(props) {
     <>
       <div className="user-review-container>">
         {userReviews.map((review) => (
-          <ReviewUser
+          <ReviewCard
             id={review.id}
             rating={review.rating}
             content={review.content}
