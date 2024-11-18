@@ -27,8 +27,8 @@ function LoginForm() {
       // console.log(data)
 
       if (response.ok) {
-        console.log("LoginForm.jsx - USER LOGIN: ", userEmail);
-        handleUpdateUser({ email: userEmail });
+        console.log("LoginForm.jsx - USER LOGIN: ", data);
+        handleUpdateUser({ email: userEmail, userId: data.data.id });
 
         //redirect to dashboard on successful login
         setSubmitResult("");

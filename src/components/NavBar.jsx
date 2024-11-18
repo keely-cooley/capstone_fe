@@ -16,6 +16,9 @@ export default function NavBar() {
         <li>
           <NavLink to="/">Home</NavLink>
         </li>
+        <li>
+          <NavLink to="/dashboard">Dashboard</NavLink>
+        </li>
         {currentUser.email ? (
           <li>
             <NavLink onClick={() => handleUpdateUser({})}>Logout</NavLink>
@@ -30,9 +33,6 @@ export default function NavBar() {
             </li>
           </>
         )}
-        <li>
-          <NavLink to="/dashboard">Dashboard</NavLink>
-        </li>
       </ul>
     </nav>
   );

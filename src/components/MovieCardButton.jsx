@@ -1,9 +1,10 @@
 import "../css/MovieList.css";
 
 //add movie to watchlist
-const AddMyList = () => {
+const MovieCardButton = (props) => {
+  const { movie, buttonText, handleButtonClick } = props
   return (
-    <button className="add-my-list">
+    <button className="add-my-list" onClick = {() => handleButtonClick(movie)}>
       {" "}
       {/* Use a button element */}
       <svg
@@ -18,9 +19,9 @@ const AddMyList = () => {
           d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"
         />
       </svg>
-      <span className="mr-2">Add to My List</span>
+      <span className="mr-2">{ buttonText }</span>
     </button>
   );
 };
 
-export default AddMyList;
+export default MovieCardButton;
