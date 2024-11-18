@@ -1,7 +1,7 @@
 import { useState } from "react";
 import StarRating from "./StarRating";
 
-function PostForm({ setUserPosts }) {
+function ReviewForm({ setUserReviews }) {
   const [movieTitle, setMovieTitle] = useState("");
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState("");
@@ -9,7 +9,8 @@ function PostForm({ setUserPosts }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    fetch("http://localhost:8083/userPosts/newPost", {
+    //create new review
+    fetch("http://localhost:8083/reviews/new", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -20,12 +21,12 @@ function PostForm({ setUserPosts }) {
       .then((res) => res.json())
       .then((json) => {
         console.log(json);
-        //fetch userPosts after successful POST call
-        fetch("http://localhost:8083/userPosts")
+        //fetch userReviews after successful POST call
+        fetch("http://localhost:8083/reviews")
           .then((res) => res.json())
           .then((json) => {
             console.log("App.jsx useEffect:", json.result);
-            setUserPosts(json.result);
+            setUserReviews(json.result);
           });
       })
       .catch((error) => console.error("Error adding new post:", error));
@@ -72,4 +73,4 @@ function PostForm({ setUserPosts }) {
   );
 }
 
-export default PostForm;
+export default ReviewForm;

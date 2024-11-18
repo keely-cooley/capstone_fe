@@ -1,24 +1,24 @@
 import { useState } from "react";
 
-function EditPost({ post, onUpdate }) {
-  const [movieTitle, setMovieTitle] = useState(post.movieTitle);
-  const [rating, setRating] = useState(post.rating);
-  const [content, setContent] = useState(post.content);
+function EditReview({ review, onUpdate }) {
+  const [movieTitle, setMovieTitle] = useState(review.movieTitle);
+  const [rating, setRating] = useState(review.rating);
+  const [content, setContent] = useState(review.content);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const updatedPost = {
-      ...post,
+    const updatedReview = {
+      ...review,
       movieTitle,
       rating,
       content,
     };
-    onUpdate(updatedPost);
+    onUpdate(updatedReview);
   };
 
   return (
     <div>
-      <h2>Edit Post</h2>
+      <h2>Edit Review</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Movie Title:</label>
@@ -43,10 +43,10 @@ function EditPost({ post, onUpdate }) {
             onChange={(e) => setContent(e.target.value)}
           />
         </div>
-        <button type="submit">Update Post</button>
+        <button type="submit">Update Review</button>
       </form>
     </div>
   );
 }
 
-export default EditPost;
+export default EditReview;

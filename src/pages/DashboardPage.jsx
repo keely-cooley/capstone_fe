@@ -4,8 +4,8 @@ import { useUserContext } from "../context/UserContext";
 import MovieList from "../components/MovieList";
 import MovieListHeading from "../components/MovieListHeading";
 import SearchBox from "../components/SearchBox";
-import PostForm from "../components/PostForm";
-import PostList from "../components/PostList";
+import ReviewForm from "../components/ReviewForm";
+import ReviewDashboard from "../components/ReviewDashboard";
 import "../css/DashboardPage.css";
 
 function DashboardPage() {
@@ -17,7 +17,7 @@ function DashboardPage() {
   const [myList, setMyList] = useState([]);
   const [seenList, setSeenList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const [userPosts, setUserPosts] = useState([]);
+  const [userReviews, setUserReviews] = useState([]);
 
   //search for movies
   const getMovieRequest = async (searchValue) => {
@@ -335,7 +335,7 @@ function DashboardPage() {
             <div className="card mb-4">
               <div className="card-body">
                 <h3 className="card-title">New Review</h3>
-                <PostForm setUserPosts={setUserPosts} />
+                <ReviewForm setUserReviews={setUserReviews} />
               </div>
             </div>
           </div>
@@ -344,7 +344,7 @@ function DashboardPage() {
             <div className="card mb-4">
               <div className="card-body">
                 <h3 className="card-title">Your Reviews</h3>
-                <PostList userPosts={userPosts} setUserPosts={setUserPosts} />
+                <ReviewDashboard userReviews={userReviews} setUserReviews={setUserReviews} />
               </div>
             </div>
           </div>

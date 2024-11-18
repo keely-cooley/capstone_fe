@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import UserPost from "./UserPost";
+import UserReview from "./UserReview";
 
-function PostList(props) {
-  const { userPosts, setUserPosts } = props;
+function ReviewList(props) {
+  const { userReviews, setUserReviews } = props;
 
-  //display user posts
+  //display user reviews
   useEffect(() => {
-    fetch("http://localhost:8083/userPosts")
+    fetch("http://localhost:8083/reviews")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Network response was not ok");
@@ -15,21 +15,21 @@ function PostList(props) {
       })
       .then((json) => {
         console.log("App.jsx useEffect", json);
-        setUserPosts(json.result);
+        setUserReviews(json.result);
       })
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);
       });
   }, []);
 
-  //edit user Post
-  const updateUserPost = (updatedPost) => {
-    fetch(`http://localhost:8083/userPosts/update/${updatedPost.id}`, {
+  //edit user Review
+  const updateUserReview = (updatedReview) => {
+    fetch(`http://localhost:8083/reviews/update/${updatedReview.id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(updatedPost),
+      body: JSON.stringify(updatedReview),
     })
       .then((res) => {
         if (!res.ok) {
@@ -38,8 +38,8 @@ function PostList(props) {
         return res.json();
       })
       .then((json) => {
-        setUserPosts((prevPosts) =>
-          prevPosts.map((post) => (post.id === updatedPost.id ? json : post))
+        setUserReviews((prevReviews) =>
+          prevReviews.map((review) => (review.id === updatedReview.id ? json : review))
         );
       })
       .catch((error) => {
@@ -47,10 +47,10 @@ function PostList(props) {
       });
   };
 
-  //delete user post
-  const deleteUserPost = (postId) => {
-    if (postId) {
-      fetch(`http://localhost:8083/userPosts/delete/${postId}`, {
+  //delete user review
+  const deleteUserReview = (reviewId) => {
+    if (reviewId) {
+      fetch(`http://localhost:8083/reviews/delete/${reviewId}`, {
         method: "DELETE",
       })
         .then((res) => {
@@ -60,8 +60,8 @@ function PostList(props) {
           return res.json();
         })
         .then(() => {
-          setUserPosts((prevPosts) =>
-            prevPosts.filter((post) => post.id !== postId)
+          setUserReviews((prevReviews) =>
+            prevReviews.filter((review) => review.id !== reviewId)
           );
         })
         .catch((error) => {
@@ -75,16 +75,16 @@ function PostList(props) {
 
   return (
     <>
-      <div className="user-post-container>">
-        {userPosts.map((post) => (
-          <UserPost
-            id={post.id}
-            movieTitle={post.movieTitle}
-            rating={post.rating}
-            content={post.content}
-            key={post.id}
-            onUpdate={updateUserPost}
-            onDelete={deleteUserPost}
+      <div className="user-review-container>">
+        {userReviews.map((review) => (
+          <UserReview
+            id={review.id}
+            movieTitle={review.movieTitle}
+            rating={review.rating}
+            content={review.content}
+            key={review.id}
+            onUpdate={updateUserReview}
+            onDelete={deleteUserReview}
           />
         ))}
       </div>
@@ -92,4 +92,4 @@ function PostList(props) {
   );
 }
 
-export default PostList;
+export default ReviewList;
