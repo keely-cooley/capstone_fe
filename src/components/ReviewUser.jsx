@@ -32,8 +32,8 @@ function UserReview(props) {
           <StarRating rating={parseInt(rating, 10)} readOnly={true} />
         </span>
         <p className="review-content">{content}</p>
-        <button onClick={() => setIsEditing(true)}>Edit</button>
-        <button onClick={() => setIsDeleting(true)}>Delete</button>
+        <button className="button" onClick={() => setIsEditing(true)}>Edit</button>
+        <button className="button" onClick={() => setIsDeleting(true)}>Delete</button>
 
         {isEditing && (
           <ReviewEdit

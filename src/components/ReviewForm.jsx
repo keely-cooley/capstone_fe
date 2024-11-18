@@ -20,16 +20,20 @@ function ReviewForm({ setUserReviews }) {
     })
       .then((res) => res.json())
       .then((json) => {
-        console.log(json);
-        //fetch userReviews after successful POST call
+        console.log("Review created:", json);
+        
+        // fetch updated reviews after successful POST
         fetch("http://localhost:8083/reviews")
           .then((res) => res.json())
           .then((json) => {
-            console.log("App.jsx useEffect:", json.result);
-            setUserReviews(json.result);
-          });
+            console.log("Updated reviews:", json);
+            setUserReviews(json);
+          })
+          .catch((err) => console.error("Error fetching reviews:", err));
       })
-      .catch((error) => console.error("Error adding new post:", error));
+      .catch((error) => {
+        console.error("Error adding new review:", error);
+      });
   };
 
   return (

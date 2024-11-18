@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import UserReview from "./UserReview";
+import ReviewUser from "./ReviewUser";
 
 function ReviewList(props) {
   const { userReviews, setUserReviews } = props;
@@ -14,8 +14,8 @@ function ReviewList(props) {
         return res.json();
       })
       .then((json) => {
-        console.log("App.jsx useEffect", json);
-        setUserReviews(json.result);
+        console.log("Dashboard.jsx - fetched reviews for display", json);
+        setUserReviews(json);
       })
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);
@@ -77,9 +77,8 @@ function ReviewList(props) {
     <>
       <div className="user-review-container>">
         {userReviews.map((review) => (
-          <UserReview
+          <ReviewUser
             id={review.id}
-            movieTitle={review.movieTitle}
             rating={review.rating}
             content={review.content}
             key={review.id}
