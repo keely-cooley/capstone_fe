@@ -76,8 +76,6 @@ function DashboardPage() {
       return; //?? what should I return here to display already in list to user
     }
 
-    // const newMyList = [...myList, movie];
-    // setMyList(newMyList);
     console.log("addMovieToList", currentUser.userId);
 
     try {
@@ -167,7 +165,7 @@ function DashboardPage() {
     }
   };
 
-  //remove movie from 'seen list'
+  //REMOVE MOVIE FROM  'seen list'
   const removeSeenMovie = async (movie) => {
     //get movie id
     console.log("removeSeenMovie:", movie);
@@ -201,17 +199,7 @@ function DashboardPage() {
     }
   };
 
-  // // remove movie from 'seen list'
-  // const removeSeenMovie = (movie) => {
-  //   console.log("Removing movie:", movie);
-  //   const newSeenList = seenList.filter(
-  //     (listed) => listed.imdbID !== movie.imdbID
-  //   );
-  //   console.log(newSeenList);
-  //   setSeenList(newSeenList);
-  // };
-
-  //remove movie from 'my list'
+  //REMOVE MOVIE FROM 'my list'
   const removeListMovie = async (movie) => {
     //get movie id
     console.log("removeListMovie:", movie);

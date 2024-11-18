@@ -10,7 +10,7 @@ function UserReview(props) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  console.log("review.jsx", id, movieTitle, rating, content);
+  console.log("ReviewCard.jsx - review:", id, movieTitle, rating, content);
 
   const handleUpdate = (updatedReview) => {
     onUpdate(updatedReview);
