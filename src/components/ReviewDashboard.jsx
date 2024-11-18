@@ -1,11 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import ReviewCard from "./ReviewCard";
 
 function ReviewList(props) {
   const { userReviews, setUserReviews } = props;
+  const [loading, setLoading] = useState(true);
 
-  //display user reviews
+  // fetch user reviews and movie details
   useEffect(() => {
+    // first fetch the reviews
     fetch("http://localhost:8083/reviews")
       .then((res) => {
         if (!res.ok) {
@@ -13,18 +15,43 @@ function ReviewList(props) {
         }
         return res.json();
       })
-      .then((json) => {
-        console.log("Dashboard.jsx - fetched reviews for display", json);
-        setUserReviews(json);
+      .then((reviews) => {
+        console.log("Dashboard.jsx - fetched reviews for display", reviews);
+
+        //fetch movie details for each review
+        const movieDetails = reviews.map((review) =>
+          fetch(`http://localhost:8083/movies/${review.movieId}`)
+            .then((res) => res.json())
+            .then((movie) => ({
+              ...review,
+              movieTitle: movie.title,
+            }))
+        );
+
+        // wait for all movie details to be fetched
+        Promise.all(movieDetails)
+          .then((reviewsWithMovies) => {
+            setUserReviews(reviewsWithMovies);
+            setLoading(false);
+          })
+          .catch((error) => {
+            console.error(
+              "There was a problem with fetching movie details:",
+              error
+            );
+            setLoading(false);
+          });
       })
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);
+        setLoading(false);
       });
-  }, []);
+  }, [setUserReviews]);
 
   //edit user Review
   const updateUserReview = (updatedReview) => {
-    console.log("ReviewDashboard.jsx - updatedReview:", updatedReview)
+    console.log("ReviewDashboard.jsx - updatedReview:", updatedReview);
+
     fetch(`http://localhost:8083/reviews/update/${updatedReview.id}`, {
       method: "PUT",
       headers: {
@@ -38,9 +65,11 @@ function ReviewList(props) {
         }
         return res.json();
       })
-      .then((json) => {
+      .then((updatedReviewFromApi) => {
         setUserReviews((prevReviews) =>
-          prevReviews.map((review) => (review.id === updatedReview.id ? json : review))
+          prevReviews.map((review) =>
+            review.id === updatedReview.id ? updatedReviewFromApi : review
+          )
         );
       })
       .catch((error) => {
@@ -74,19 +103,28 @@ function ReviewList(props) {
     }
   };
 
+  if (loading) {
+    return <div>Loading Reviews...</div>;
+  }
+
   return (
     <>
-      <div className="user-review-container>">
-        {userReviews.map((review) => (
-          <ReviewCard
-            id={review.id}
-            rating={review.rating}
-            content={review.content}
-            key={review.id}
-            onUpdate={updateUserReview}
-            onDelete={deleteUserReview}
-          />
-        ))}
+      <div className="user-review-container">
+        {userReviews && userReviews.length > 0 ? (
+          userReviews.map((review) => (
+            <ReviewCard
+              key={review.id}
+              id={review.id}
+              rating={review.rating}
+              content={review.content}
+              movieTitle={review.movieTitle}
+              onUpdate={updateUserReview}
+              onDelete={deleteUserReview}
+            />
+          ))
+        ) : (
+          <div>No reviews found.</div>
+        )}
       </div>
     </>
   );

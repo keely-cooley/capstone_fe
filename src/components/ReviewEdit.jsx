@@ -1,7 +1,7 @@
 import { useState } from "react";
+import StarRating from "./StarRating";
 
 function EditReview({ review, onUpdate }) {
-  const [movieTitle, setMovieTitle] = useState(review.movieTitle);
   const [rating, setRating] = useState(review.rating);
   const [content, setContent] = useState(review.content);
 
@@ -9,7 +9,6 @@ function EditReview({ review, onUpdate }) {
     e.preventDefault();
     const updatedReview = {
       ...review,
-      movieTitle,
       rating,
       content,
     };
@@ -18,23 +17,11 @@ function EditReview({ review, onUpdate }) {
 
   return (
     <div>
-      <h2>Edit Review</h2>
+      <h2>Edit Review for {review.movieTitle}</h2>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label>Movie Title:</label>
-          <input
-            type="text"
-            value={movieTitle}
-            onChange={(e) => setMovieTitle(e.target.value)}
-          />
-        </div>
-        <div>
+         <div>
           <label>Rating:</label>
-          <input
-            type="number"
-            value={rating}
-            onChange={(e) => setRating(e.target.value)}
-          />
+          <StarRating rating={rating} setRating={setRating} />
         </div>
         <div>
           <label>Content:</label>
