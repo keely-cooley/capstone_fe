@@ -1,5 +1,26 @@
 import { useEffect, useState } from "react";
 import "../css/LandingPage.css";
+import StarRating from "./StarRating";
+
+// Fisher-Yates shuffle function
+function shuffle(movies) {
+  let m = movies.length,
+    t,
+    i;
+
+  // While there remain elements to shuffle…
+  while (m) {
+    // Pick a remaining element…
+    i = Math.floor(Math.random() * m--);
+
+    // And swap it with the current element.
+    t = movies[m];
+    movies[m] = movies[i];
+    movies[i] = t;
+  }
+
+  return movies;
+}
 
 const LandingReview = () => {
   const [reviews, setReviews] = useState([]);
@@ -44,7 +65,9 @@ const LandingReview = () => {
           movieTitle: movieMap[review.movieId] || "Unknown Movie",
         }));
 
-        setReviews(reviewsWithMovies);
+        // Randomize the reviews using Fisher-Yates shuffle and limit to 25
+        const shuffledReviews = shuffle(reviewsWithMovies).slice(0, 25);
+        setReviews(shuffledReviews);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching reviews and movies:", error);
@@ -77,15 +100,10 @@ const LandingReview = () => {
           {reviews.map((review) => (
             <div className="landing-review-card" key={review.id}>
               <div className="landing-review-body">
-                <p className="landing-review-movie-title">
-                  {review.movieTitle}
-                </p>{" "}
-                {/* Display movie title */}
+                <p className="landing-review-movie-title">{review.movieTitle}</p>
                 <p className="landing-review-username">{review.username}</p>
-                <p className="landing-review-rating">{review.rating}</p>
-                <p className="landing-review-content-landing">
-                  {review.content}
-                </p>
+                <StarRating rating={review.rating} setRating={() => {}} />
+                <p className="landing-review-content-landing">{review.content}</p>
               </div>
             </div>
           ))}
