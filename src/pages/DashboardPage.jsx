@@ -4,8 +4,8 @@ import { useUserContext } from "../context/UserContext";
 import MovieList from "../components/MovieList";
 import MovieListHeading from "../components/MovieListHeading";
 import SearchBox from "../components/SearchBox";
-import PostForm from "../components/PostForm";
-import PostList from "../components/PostList";
+import ReviewForm from "../components/ReviewForm";
+import ReviewDashboard from "../components/ReviewDashboard";
 import "../css/DashboardPage.css";
 
 function DashboardPage() {
@@ -17,7 +17,7 @@ function DashboardPage() {
   const [myList, setMyList] = useState([]);
   const [seenList, setSeenList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const [userPosts, setUserPosts] = useState([]);
+  const [userReviews, setUserReviews] = useState([]);
 
   //search for movies
   const getMovieRequest = async (searchValue) => {
@@ -68,7 +68,7 @@ function DashboardPage() {
     }
   };
 
-  // add movie to 'my list'
+  // ADD MOVIE 'TO MY LIST'
   const addMovieToList = async (movie) => {
     //check if movie already exists in 'my list'
     if (myList.some((check) => check.imdbID === movie.imdbID)) {
@@ -76,8 +76,6 @@ function DashboardPage() {
       return; //?? what should I return here to display already in list to user
     }
 
-    // const newMyList = [...myList, movie];
-    // setMyList(newMyList);
     console.log("addMovieToList", currentUser.userId);
 
     try {
@@ -87,9 +85,9 @@ function DashboardPage() {
       );
       const validationJson = await validationResponse.json();
       console.log("ValidationJson:", validationJson);
-      if(!validationJson.data.id) {
-        console.log(validationJson.data.id)
-        return
+      if (!validationJson.data.id) {
+        console.log(validationJson.data.id);
+        return;
       }
       if (validationResponse.ok) {
         //create new listed movie object
@@ -113,7 +111,7 @@ function DashboardPage() {
 
           if (addMovieResponse.ok) {
             console.log("Movie successfully added to your list!");
-            fetchMyList()
+            fetchMyList();
           } else {
             console.log("Failed to add movie to list");
           }
@@ -131,7 +129,7 @@ function DashboardPage() {
     }
   };
 
-  // add movie to 'seen list' and remove from 'my list'
+  // ADD MOVIE TO 'seen list' and remove from 'my list'
   const addMovieToSeen = async (movie) => {
     try {
       //check if movie already exists in 'seen list'
@@ -162,70 +160,78 @@ function DashboardPage() {
       } else {
         console.log("Failed to add movie to seen list");
       }
-
     } catch (error) {
       console.log("Error occurred while processing movie:", error);
     }
   };
 
-  // remove movie from 'seen list'
-  const removeSeenMovie = (movie) => {
-    console.log("Removing movie:", movie);
-    const newSeenList = seenList.filter(
-      (listed) => listed.imdbID !== movie.imdbID
-    );
-    console.log(newSeenList);
-    setSeenList(newSeenList);
-  };
-
-  //remove movie from 'my list'
-  const removeListMovie = async (movie) => {
-    // //check if movie exists
-    // const movieInList = myList.find((check) => check.imdbID === movie.imdbID);
-
-    // if (!movieInList) {
-    //   console.log("Movie is not in your list")
-    //   return;
-    // }
-
+  //REMOVE MOVIE FROM  'seen list'
+  const removeSeenMovie = async (movie) => {
     //get movie id
-    console.log("removeListMovie:", movie)
-    const listedMovieToDelete = {
+    console.log("removeSeenMovie:", movie);
+    const seenMovieToDelete = {
       userId: currentUser.userId,
-      movieId: movie.id
+      movieId: movie.id,
     };
-    
-    //remove movie from list
+
+    //remove movie from seen list
     try {
-      console.log(listedMovieToDelete)
-      const deleteMyListResponse = await fetch(`http://localhost:8083/listedMovies/userIdAndMovieId`,
+      console.log(seenMovieToDelete);
+      const deleteSeenListResponse = await fetch(
+        `http://localhost:8083/seenMovies/userIdAndMovieId`,
         {
           method: "DELETE",
           headers: {
             "Content-Type": "application/json",
           },
-            body: JSON.stringify(listedMovieToDelete),
+          body: JSON.stringify(seenMovieToDelete),
+        }
+      );
+      if (deleteSeenListResponse.ok) {
+        console.log("Movie successfully removed from seen list!");
+        await fetchSeenList();
+      } else {
+        console.log("Failed to remove movie from seen list");
+        console.log("Delete movie error", deleteSeenListResponse);
+      }
+    } catch (error) {
+      console.log("Error occurred while removing movie from seen list:", error);
+    }
+  };
+
+  //REMOVE MOVIE FROM 'my list'
+  const removeListMovie = async (movie) => {
+    //get movie id
+    console.log("removeListMovie:", movie);
+    const listedMovieToDelete = {
+      userId: currentUser.userId,
+      movieId: movie.id,
+    };
+
+    //remove movie from list
+    try {
+      console.log(listedMovieToDelete);
+      const deleteMyListResponse = await fetch(
+        `http://localhost:8083/listedMovies/userIdAndMovieId`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(listedMovieToDelete),
         }
       );
       if (deleteMyListResponse.ok) {
         console.log("Movie successfully removed from your list!");
-        await fetchMyList()
+        await fetchMyList();
       } else {
         console.log("Failed to remove movie from my list");
-        console.log("Delete movie error", deleteMyListResponse)
+        console.log("Delete movie error", deleteMyListResponse);
       }
     } catch (error) {
-      console.log("Error occured while removing movie from your list:", error)
+      console.log("Error occurred while removing movie from your list:", error);
     }
-  }
-
-  // // remove from 'my list'
-  // const removeListMovie = (movie) => {
-  //   console.log("Removing movie:", movie);
-  //   const newMyList = myList.filter((listed) => listed.imdbID !== movie.imdbID);
-  //   console.log(newMyList);
-  //   setMyList(newMyList);
-  // };
+  };
 
   // useEffect to fetch movies based on searchValue
   useEffect(() => {
@@ -240,7 +246,7 @@ function DashboardPage() {
         `http://localhost:8083/listedMovies/user/${currentUser.userId}`
       );
       const data = await response.json();
-      console.log("Updating My List")
+      console.log("Updating My List");
       setMyList(data);
     } catch (error) {
       console.log("DashboardPage.jsx.jsx : an error occurred", error);
@@ -259,25 +265,23 @@ function DashboardPage() {
     }
   };
 
-
   //any time the page loads, load 'my list' from database
   useEffect(() => {
     fetchMyList();
   }, [currentUser.userId]);
 
-    //any time the page loads, load 'seen list' from database
+  //any time the page loads, load 'seen list' from database
   useEffect(() => {
     fetchSeenList();
   }, [currentUser.userId]);
-
 
   return (
     <>
       {/* All movies */}
       <div className="container-fluid movie-app">
-        <div className="row d-flex align-items-center mt-4 mb-4">
-          <div className="col text-center">
-            <MovieListHeading heading="Search for a movie" />
+        <div className="landing-search-row d-flex align-items-center mt-4 mb-4">
+          <div className="landing-search-col text-center">
+            <MovieListHeading heading="Find A Film" />
           </div>
           <div className="col">
             <SearchBox
@@ -298,7 +302,7 @@ function DashboardPage() {
         {/* Movies in user's 'My List' */}
         <div className="row d-flex align-items-center mt-4 mb-4">
           <div className="col text-center">
-            <MovieListHeading heading="My List" />
+            <MovieListHeading heading="Your Watch List" />
           </div>
         </div>
         <div className="row">
@@ -313,7 +317,7 @@ function DashboardPage() {
         {/* Movies in user's 'Seen List' */}
         <div className="row d-flex align-items-center mt-4 mb-4">
           <div className="col text-center">
-            <MovieListHeading heading="Movies You've Seen" />
+            <MovieListHeading heading="Your Seen List" />
           </div>
         </div>
         <div className="row">
@@ -325,26 +329,28 @@ function DashboardPage() {
           />
         </div>
       </div>
-
       {/* User's Reviews */}
-      <div className="container mt-4">
-        <h2 className="text-center mb-4">My Reviews</h2>
+      <div className="dashboard-review-container">
+        <h2 className="dashboard-review-text-center mb-4">My Reviews</h2>
 
-        <div className="row">
-          <div className="col-md-6">
-            <div className="card mb-4">
-              <div className="card-body">
-                <h3 className="card-title">New Review</h3>
-                <PostForm setUserPosts={setUserPosts} />
+        <div className="dashboard-review-row">
+          <div className="dashboard-review-col-md-6">
+            <div className="dashboard-review-card mb-4">
+              <div className="dashboard-review-card-body">
+                <h3 className="dashboard-review-card-title">New Review</h3>
+                <ReviewForm setUserReviews={setUserReviews} />
               </div>
             </div>
           </div>
 
-          <div className="col-md-6">
-            <div className="card mb-4">
-              <div className="card-body">
-                <h3 className="card-title">Your Reviews</h3>
-                <PostList userPosts={userPosts} setUserPosts={setUserPosts} />
+          <div className="dashboard-review-col-md-6">
+            <div className="dashboard-review-card mb-4">
+              <div className="dashboard-review-card-body">
+                <h3 className="dashboard-review-card-title">All Reviews</h3>
+                <ReviewDashboard
+                  userReviews={userReviews}
+                  setUserReviews={setUserReviews}
+                />
               </div>
             </div>
           </div>
