@@ -22,7 +22,7 @@ function ReviewList(props) {
         // extract all unique movieIds from the reviews
         const movieIds = [...new Set(reviews.map((review) => review.movieId))];
 
-        // fetch all movie details for the unique movieIds
+        // fetch all movie details
         fetch(`http://localhost:8083/movies?ids=${movieIds.join(",")}`)
           .then((res) => {
             if (!res.ok) {

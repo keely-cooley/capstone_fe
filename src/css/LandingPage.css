@@ -164,13 +164,13 @@ body {
   border-radius: 10px;
   text-align: center;
   min-width: 0;
-  height: 150px;
+  height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #ffffff;
   background-color: rgb(39, 39, 38);
-  font-size: 1rem;
+  font-size: .95rem;
   margin-bottom: 5px;
   box-shadow: 0 0 5px rgba(177, 105, 213, 0.8),
     0 0 10px rgba(177, 105, 213, 0.6), 0 0 15px rgba(177, 105, 213, 0.4),
