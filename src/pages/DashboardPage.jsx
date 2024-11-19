@@ -279,9 +279,9 @@ function DashboardPage() {
     <>
       {/* All movies */}
       <div className="container-fluid movie-app">
-        <div className="row d-flex align-items-center mt-4 mb-4">
-          <div className="col text-center">
-            <MovieListHeading heading="Search for a movie" />
+        <div className="landing-search-row d-flex align-items-center mt-4 mb-4">
+          <div className="landing-search-col text-center">
+            <MovieListHeading heading="Find A Film" />
           </div>
           <div className="col">
             <SearchBox
@@ -302,7 +302,7 @@ function DashboardPage() {
         {/* Movies in user's 'My List' */}
         <div className="row d-flex align-items-center mt-4 mb-4">
           <div className="col text-center">
-            <MovieListHeading heading="My List" />
+            <MovieListHeading heading="Your Watch List" />
           </div>
         </div>
         <div className="row">
@@ -317,7 +317,7 @@ function DashboardPage() {
         {/* Movies in user's 'Seen List' */}
         <div className="row d-flex align-items-center mt-4 mb-4">
           <div className="col text-center">
-            <MovieListHeading heading="Movies You've Seen" />
+            <MovieListHeading heading="Your Seen List" />
           </div>
         </div>
         <div className="row">
@@ -329,25 +329,24 @@ function DashboardPage() {
           />
         </div>
       </div>
-
       {/* User's Reviews */}
-      <div className="container mt-4">
-        <h2 className="text-center mb-4">My Reviews</h2>
+      <div className="dashboard-review-container">
+        <h2 className="dashboard-review-text-center mb-4">My Reviews</h2>
 
-        <div className="row">
-          <div className="col-md-6">
-            <div className="card mb-4">
-              <div className="card-body">
-                <h3 className="card-title">New Review</h3>
+        <div className="dashboard-review-row">
+          <div className="dashboard-review-col-md-6">
+            <div className="dashboard-review-card mb-4">
+              <div className="dashboard-review-card-body">
+                <h3 className="dashboard-review-card-title">New Review</h3>
                 <ReviewForm setUserReviews={setUserReviews} />
               </div>
             </div>
           </div>
 
-          <div className="col-md-6">
-            <div className="card mb-4">
-              <div className="card-body">
-                <h3 className="card-title">Your Reviews</h3>
+          <div className="dashboard-review-col-md-6">
+            <div className="dashboard-review-card mb-4">
+              <div className="dashboard-review-card-body">
+                <h3 className="dashboard-review-card-title">All Reviews</h3>
                 <ReviewDashboard
                   userReviews={userReviews}
                   setUserReviews={setUserReviews}

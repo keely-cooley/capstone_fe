@@ -101,8 +101,8 @@ const LandingReview = () => {
             <div className="landing-review-card" key={review.id}>
               <div className="landing-review-body">
                 <p className="landing-review-movie-title">{review.movieTitle}</p>
-                <p className="landing-review-username">{review.username}</p>
                 <StarRating rating={review.rating} setRating={() => {}} />
+                <p className="landing-review-username">{review.username}</p>
                 <p className="landing-review-content-landing">{review.content}</p>
               </div>
             </div>
