@@ -43,7 +43,7 @@ function ReviewForm({ setUserReviews }) {
         <div>
           <label>
             {" "}
-            Title:
+            Find A Title In Your Seen List:
             <input
               type="text"
               value={movieTitle}

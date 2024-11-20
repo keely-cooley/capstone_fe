@@ -1,5 +1,3 @@
-import "../css/MovieList.css";
-
 const SearchBox = (props) => {
   return (
     <div className="search-box">

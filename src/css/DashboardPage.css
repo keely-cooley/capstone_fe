@@ -7,15 +7,38 @@ body {
 .movie-list-heading {
   text-align: center;
   width: 100%;
+  margin: 20px 0;
+  font-size: .7rem;
+  color: #ffffff;
+  position: relative;
   text-align: center; 
   border-bottom: 2px solid #ccc;
   padding-bottom: 10px;
   margin-bottom: 20px;
 }
 
+.movie-list-heading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(to right, #00ffffcc, #ff00ff);
+  box-shadow: 
+    0 0 5px #ff00ff,   
+    0 0 10px #ff00ff, 
+    0 0 15px #ff00ff, 
+    0 0 20px #ff00ff;
+}
+
 .movie-app {
   margin-top: 60px;
   padding: 20px;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .landing-search-row {
@@ -63,6 +86,7 @@ body {
 
 .movie-poster {
   width: 100%;
+  max-width: 150px;
   border-radius: 8px;
 }
 
@@ -93,34 +117,6 @@ body {
   color: white;
   cursor: pointer;
   font-size: 16px;
-}
-
-.movie-list-heading {
-  text-align: center;
-  margin: 20px 0;
-  font-size: 2rem;
-  color: #ffffff;
-    position: relative;
-}
-
-.movie-list-heading::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(to right, #00ffffcc, #ff00ff);
-  box-shadow: 
-    0 0 5px #ff00ff,   
-    0 0 10px #ff00ff, 
-    0 0 15px #ff00ff, 
-    0 0 20px #ff00ff;
-}
-
-.movie-list-heading h1 {
-  font-size: 24px;
-  color: #ffffff;
 }
 
 .search-box {

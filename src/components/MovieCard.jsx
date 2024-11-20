@@ -1,4 +1,3 @@
-import "../css/MovieList.css";
 import MovieCardButton from "./MovieCardButton";
 
 const MovieCard = (props) => {

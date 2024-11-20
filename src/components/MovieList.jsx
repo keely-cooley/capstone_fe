@@ -1,4 +1,3 @@
-import "../css/MovieList.css";
 import MovieCard from "./MovieCard";
 
 const MovieList = (props) => {
