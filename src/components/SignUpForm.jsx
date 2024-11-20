@@ -10,39 +10,39 @@ function SignUpForm() {
   const [userPassword, setUserPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [submitResult, setSubmitResult] = useState("");
-  const [passwordCount, setPasswordCount] = useState(0);
-  const [showForm, setShowForm] = useState(true);
+  const [passwordsMatch, setPasswordsMatch] = useState(true);
   const navigate = useNavigate();
 
   const { currentUser, handleUpdateUser } = useUserContext();
-  const maxPasswordCount = 5;
+
+  //function to check if passwords match in real-time
+  const handleConfirmPasswordChange = (e) => {
+    setConfirmPassword(e.target.value);
+    if (e.target.value === userPassword) {
+      setPasswordsMatch(true); 
+    } else {
+      setPasswordsMatch(false); 
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //must be 8-15 characters, conatin upper and lowercase letter, number, and special character
+
+    //password validation: must be 8-15 characters, contain upper and lowercase letter, number, and special character
     let regex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/;
 
-    if (passwordCount === maxPasswordCount) {
-      setShowForm(false);
-    }
-
     //password validation
     if (userPassword.length < 5) {
-      setPasswordCount(passwordCount + 1);
-      setSubmitResult("Password must be at least 5 characters long");
+      setSubmitResult("Password must be at least 8 characters long");
     } else if (userPassword === userEmail) {
-      setPasswordCount(passwordCount + 1);
-      setSubmitResult("Password must not match email address");
+      setSubmitResult("Password cannot match email address");
     } else if (regex.test(userPassword) === false) {
-      //must include character not a letter
-      setPasswordCount(passwordCount + 1);
       setSubmitResult(
         "Passwords require a special character, lowercase/uppercase, digit, be between 8-15 chars"
       );
-    } else if (userPassword !== confirmPassword) {
-      //confirm password and confirm password are the same
-      setPasswordCount(passwordCount + 1);
+    } else if (!passwordsMatch) {
+      //confirm 'password' and 'confirm password' are the same
       setSubmitResult("Passwords do not match");
     } else {
       // make API call to backend
@@ -77,8 +77,6 @@ function SignUpForm() {
         setSubmitResult("An error occurred. ", error);
       }
     }
-
-    console.log("handleSubmit:", "passwordCount:", passwordCount);
   };
 
   return (
@@ -87,7 +85,7 @@ function SignUpForm() {
 
       <UserStatus /> {/* displays alternative message if user is already logged in*/}
 
-      {showForm && !currentUser.username && ( //if user is not logged in, display sign up form
+      {!currentUser.username && ( //if user is not logged in, display sign up form
         <form onSubmit={handleSubmit}>
           <div className="formRow">
             <label>
@@ -123,6 +121,10 @@ function SignUpForm() {
                 onChange={(e) => setUserPassword(e.target.value)}
               />
             </label>
+            {/* Display password requirements */}
+            <p className="signup-password-requirements">
+              Password must be 8-15 characters and include at least one lowercase letter, one uppercase letter, one number, and one special character.
+            </p>
           </div>
 
           <div className="formRow">
@@ -132,9 +134,12 @@ function SignUpForm() {
                 type="password"
                 value={confirmPassword}
                 name="confirmPassword"
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={handleConfirmPasswordChange}
               />
             </label>
+            {!passwordsMatch && (
+              <p className="error-message">Passwords must match</p>
+            )}
           </div>
 
           <button className="button">Sign Up!</button>

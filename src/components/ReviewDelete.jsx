@@ -6,9 +6,9 @@ function DeleteReview({ review, onDelete }) {
   return (
     <div>
       <h2>Delete Review</h2>
-      <p>Are you sure you want to delete {review.movieTitle}?</p>
-      <button onClick={handleDelete}>Yes, Delete</button>
-      <button onClick={() => onDelete(null)}>Cancel</button>
+      <p>Are you sure you want to delete your review for {review.movieTitle}?</p>
+      <button className="button" onClick={handleDelete}>Delete!</button>
+      <button className="button" onClick={() => onDelete(null)}>Cancel</button>
     </div>
   );
 }

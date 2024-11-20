@@ -6,8 +6,8 @@ function ReviewList(props) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // fetch user reviews and movie details
-  useEffect(() => {
+  // fetch user reviews and associated movie details
+  const fetchUserReviewsWithMovieDetails = () => {
     // first fetch the reviews
     fetch("http://localhost:8083/reviews")
       .then((res) => {
@@ -42,6 +42,7 @@ function ReviewList(props) {
               movieTitle: movieMap[review.movieId] || "Unknown Movie",
             }));
 
+            // use the parent function to set reviews
             setUserReviews(reviewsWithMovies);
             setLoading(false);
           })
@@ -59,14 +60,19 @@ function ReviewList(props) {
         setError("Failed to load reviews. Please try again later.");
         setLoading(false);
       });
+  };
+
+  // call the fetchUserReviewsWithMovieDetails function inside the useEffect
+  useEffect(() => {
+    fetchUserReviewsWithMovieDetails();
   }, [setUserReviews]);
 
   // edit user Review
   const updateUserReview = async (updatedReview) => {
     try {
       console.log("ReviewDashboard.jsx - updating review:", updatedReview);
-
-      // Make the API call to update the review in the backend
+  
+      // API call to update the review in the backend
       const response = await fetch(
         `http://localhost:8083/reviews/update/${updatedReview.id}`,
         {
@@ -77,34 +83,25 @@ function ReviewList(props) {
           body: JSON.stringify(updatedReview),
         }
       );
-
-      // Check if the response is OK, otherwise throw an error
+  
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-
-      // Parse the response JSON data
+  
       const updatedReviewFromApi = await response.json();
-
+  
       console.log("Updated review from API:", updatedReviewFromApi);
-
-      // Update the user reviews with the modified review
-      setUserReviews((prevReviews) => {
-        const updatedReviews = prevReviews.map((review) =>
-          review.id === updatedReview.id ? updatedReviewFromApi : review
-        );
-
-        // Debugging: Check if the updated review is in the list
-        console.log("Updated reviews array:", updatedReviews);
-        return updatedReviews;
-      });
+  
+      // after updating the review, re-fetch the reviews and movie details
+      fetchUserReviewsWithMovieDetails();
+  
     } catch (error) {
       console.error("There was a problem with the update operation:", error);
       setError("Failed to update the review. Please try again.");
     }
   };
 
-  //delete user review
+  // delete user review
   const deleteUserReview = (reviewId) => {
     if (reviewId) {
       fetch(`http://localhost:8083/reviews/delete/${reviewId}`, {
@@ -117,9 +114,8 @@ function ReviewList(props) {
           return res.json();
         })
         .then(() => {
-          setUserReviews((prevReviews) =>
-            prevReviews.filter((review) => review.id !== reviewId)
-          );
+          // after deleting the review, re-fetch the reviews and movie details
+          fetchUserReviewsWithMovieDetails();
         })
         .catch((error) => {
           console.error(
