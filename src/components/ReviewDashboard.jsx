@@ -24,11 +24,12 @@ function ReviewList(props) {
 
         //filter reviews for only currentUser
         const filteredReviews = reviews.filter((review) => review.userId === currentUser.userId)
+        console.log("first filtered reviews:", filteredReviews)
         // extract all unique movieIds from the reviews
         const movieIds = [...new Set(reviews.map((review) => review.movieId))];
 
         // fetch all movie details
-        fetch(`http://localhost:8083/movies?ids=${movieIds.join(",")}`)
+        fetch(`http://localhost:8083/movies`)
           .then((res) => {
             if (!res.ok) {
               throw new Error("Network response was not ok");
@@ -36,10 +37,12 @@ function ReviewList(props) {
             return res.json();
           })
           .then((movies) => {
+            console.log("questionable endpoint:", movies)
             const movieMap = movies.reduce((acc, movie) => {
               acc[movie.id] = movie.title;
               return acc;
             }, {});
+            console.log("MovieMap:", movieMap)
 
             // add movie titles to reviews based on movieId
             const reviewsWithMovies = filteredReviews.map((review) => ({
@@ -47,8 +50,17 @@ function ReviewList(props) {
               movieTitle: movieMap[review.movieId] || "Unknown Movie",
             }));
 
+            const newMovieData = [];
+            filteredReviews.map((review) => {
+              let newReview = {
+                ...review,
+                title: movieMap[review.movieId] || "unknown movie",
+              };
+              newMovieData.push(newReview)
+            });
             // use the parent function to set reviews
-            setUserReviews(reviewsWithMovies);
+            setUserReviews(newMovieData);
+            console.log("reviews with movies:", newMovieData);
             setLoading(false);
           })
           .catch((error) => {
@@ -94,7 +106,6 @@ function ReviewList(props) {
       }
   
       const updatedReviewFromApi = await response.json();
-  
       console.log("Updated review from API:", updatedReviewFromApi);
   
       // after updating the review, re-fetch the reviews and movie details
@@ -154,7 +165,7 @@ function ReviewList(props) {
               id={review.id}
               rating={review.rating}
               content={review.content}
-              movieTitle={review.movieTitle}
+              title={review.title}
               onUpdate={updateUserReview}
               onDelete={deleteUserReview}
             />

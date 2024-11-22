@@ -1,13 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import StarRating from "./StarRating";
+import { useUserContext } from "../context/UserContext";
+import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
 function ReviewForm({ setUserReviews }) {
+  const { currentUser } = useUserContext();
+
   const [movieTitle, setMovieTitle] = useState("");
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState("");
+  const [movieTitles, setMovieTitles] = useState([]);
+  const [ movieId, setMovieId] = useState(0);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const newReview = {
+      rating: rating,
+      content: content,
+      userId: currentUser.userId,
+      movieId: movieId,
+    };
 
     //create new review
     fetch("http://localhost:8083/reviews/new", {
@@ -16,14 +29,14 @@ function ReviewForm({ setUserReviews }) {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ movieTitle, rating, content }),
+      body: JSON.stringify(newReview),
     })
       .then((res) => res.json())
       .then((json) => {
         console.log("Review created:", json);
-        
+
         // fetch updated reviews after successful POST
-        fetch("http://localhost:8083/reviews")
+        fetch(`http://localhost:8083/reviews/user/id/${currentUser.userId}`)
           .then((res) => res.json())
           .then((json) => {
             console.log("Updated reviews:", json);
@@ -36,6 +49,31 @@ function ReviewForm({ setUserReviews }) {
       });
   };
 
+  const fetchSeenList = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8083/seenMovies/user/${currentUser.userId}`
+      );
+      const data = await response.json();
+      const titles = data.map((movie) => {
+        return { id: movie.id, name: movie.title };
+      });
+      setMovieTitles(titles);
+      console.log(titles);
+    } catch (error) {
+      console.log("DashboardPage.jsx.jsx : an error occurred", error);
+    }
+  };
+
+  const handleOnSelect = (item) => {
+    // the item selected
+    setMovieId(item.id);
+  };
+
+  useEffect(() => {
+    fetchSeenList();
+  }, [currentUser.userId]);
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
@@ -44,11 +82,9 @@ function ReviewForm({ setUserReviews }) {
           <label>
             {" "}
             Find A Title In Your Seen List:
-            <input
-              type="text"
-              value={movieTitle}
-              name="movieTitle"
-              onChange={(e) => setMovieTitle(e.target.value)}
+            <ReactSearchAutocomplete
+              items={movieTitles}
+              onSelect={handleOnSelect}
             />
           </label>
         </div>

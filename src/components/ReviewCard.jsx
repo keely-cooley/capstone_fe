@@ -6,11 +6,11 @@ import ReviewDelete from "./ReviewDelete";
 import "../css/DashboardPage.css";
 
 function UserReview(props) {
-  const { id, movieTitle, rating, content, onUpdate, onDelete } = props;
+  const { id, title, rating, content, onUpdate, onDelete } = props;
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  console.log("ReviewCard.jsx - review:", id, movieTitle, rating, content);
+  console.log("ReviewCard.jsx - review:", id, title, rating, content);
 
   const handleUpdate = (updatedReview) => {
     onUpdate(updatedReview);
@@ -27,7 +27,7 @@ function UserReview(props) {
   return (
     <>
       <div className="user-review">
-        <h3 className="review-movie-title">{movieTitle}</h3>
+        <h3 className="review-movie-title">{title}</h3>
         <span>
           <StarRating rating={parseInt(rating, 10)} readOnly={true} />
         </span>
@@ -37,13 +37,13 @@ function UserReview(props) {
 
         {isEditing && (
           <ReviewEdit
-            review={{ id, movieTitle, rating, content }}
+            review={{ id, title, rating, content }}
             onUpdate={handleUpdate}
           />
         )}
 
         {isDeleting && (
-          <ReviewDelete review={{ id, movieTitle }} onDelete={handleDelete} />
+          <ReviewDelete review={{ id, title }} onDelete={handleDelete} />
         )}
       </div>
     </>
