@@ -60,7 +60,7 @@ function ReviewList(props) {
             });
             // use the parent function to set reviews
             setUserReviews(newMovieData);
-            console.log("reviews with movies:", newMovieData);
+            console.log("reviews with movie titles:", newMovieData);
             setLoading(false);
           })
           .catch((error) => {
