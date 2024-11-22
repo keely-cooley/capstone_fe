@@ -331,26 +331,28 @@ function DashboardPage() {
       </div>
       {/* User's Reviews */}
       <div className="dashboard-review-container">
-        <h2 className="dashboard-review-text-center mb-4">My Reviews</h2>
+        <div className="dashboard-box-of-reviews">
+          <h2 className="dashboard-review-text-center mb-4">Your Reviews</h2>
 
-        <div className="dashboard-review-row">
-          <div className="dashboard-review-col-md-6">
-            <div className="dashboard-review-card mb-4">
-              <div className="dashboard-review-card-body">
-                <h3 className="dashboard-review-card-title">New Review</h3>
-                <ReviewForm setUserReviews={setUserReviews} />
+          <div className="dashboard-review-row">
+            <div className="dashboard-review-col-md-6">
+              <div className="dashboard-review-card mb-4">
+                <div className="dashboard-review-card-body">
+                  <h3 className="dashboard-review-card-title">New Review</h3>
+                  <ReviewForm setUserReviews={setUserReviews} />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="dashboard-review-col-md-6">
-            <div className="dashboard-review-card mb-4">
-              <div className="dashboard-review-card-body">
-                <h3 className="dashboard-review-card-title">All Reviews</h3>
-                <ReviewDashboard
-                  userReviews={userReviews}
-                  setUserReviews={setUserReviews}
-                />
+            <div className="dashboard-review-col-md-6">
+              <div className="dashboard-review-card mb-4">
+                <div className="dashboard-review-card-body">
+                  <h3 className="dashboard-review-card-title">All Reviews</h3>
+                  <ReviewDashboard
+                    userReviews={userReviews}
+                    setUserReviews={setUserReviews}
+                  />
+                </div>
               </div>
             </div>
           </div>

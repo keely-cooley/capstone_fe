@@ -140,26 +140,83 @@ body {
 
 
 /* user reviews */
-.dashboard-review-text-center {
-  text-align: center; 
-  border-bottom: 2px solid #ccc;
-  padding-bottom: 10px;
+.dashboard-review-container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: rgba(39, 39, 38, 0);
+  color: #fff;
+}
+
+.dashboard-box-of-reviews {
+  border: 1px solid rgb(177, 105, 213);
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #222;
+  position: relative;
+  z-index: 1;
+  box-shadow: 
+    0 0 10px rgba(177, 105, 213, 0.8),
+    0 0 20px rgba(177, 105, 213, 0.6),
+    0 0 30px rgba(177, 105, 213, 0.4),
+    0 0 40px rgba(177, 105, 213, 0.2);
+}
+
+.dashboard-review-header {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
   margin-bottom: 20px;
-  width: 80vw
+  color: rgb(177, 105, 213);
 }
 
 .dashboard-review-row {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  width: 80vw
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .dashboard-review-col-md-6 {
-  flex: 1;
+  flex: 1 1 calc(50% - 20px);
 }
 
 .dashboard-review-card {
+  border: 1px solid #444;
+  border-radius: 10px;
+  background-color: rgb(39, 39, 38);
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(177, 105, 213, 0.8);
+}
+
+.dashboard-review-card:hover {
+  background-color: rgb(55, 55, 55);
+}
+
+.dashboard-review-card-body {
   display: flex;
   flex-direction: column;
+}
+
+.dashboard-review-card-title {
+  font-size: 20px;
+  font-weight: bold;
+  color: rgb(177, 105, 213);
+  margin-bottom: 20px;
+}
+
+@media (max-width: 576px) {
+  .dashboard-review-col-md-6 {
+    flex: 1 1 100%;
+  }
+
+  .dashboard-review-header {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-review-card-title {
+    font-size: 1.2rem;
+  }
 }
