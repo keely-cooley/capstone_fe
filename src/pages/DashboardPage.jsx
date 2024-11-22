@@ -332,11 +332,11 @@ function DashboardPage() {
       {/* User's Reviews */}
       <div className="dashboard-review-container">
         <div className="dashboard-box-of-reviews">
-          <h2 className="dashboard-review-text-center mb-4">Your Reviews</h2>
+          <h2 className="dashboard-review-header">Your Reviews</h2>
 
           <div className="dashboard-review-row">
             <div className="dashboard-review-col-md-6">
-              <div className="dashboard-review-card mb-4">
+              <div className="dashboard-review-card">
                 <div className="dashboard-review-card-body">
                   <h3 className="dashboard-review-card-title">New Review</h3>
                   <ReviewForm setUserReviews={setUserReviews} />
@@ -345,7 +345,7 @@ function DashboardPage() {
             </div>
 
             <div className="dashboard-review-col-md-6">
-              <div className="dashboard-review-card mb-4">
+              <div className="dashboard-review-card">
                 <div className="dashboard-review-card-body">
                   <h3 className="dashboard-review-card-title">All Reviews</h3>
                   <ReviewDashboard
