@@ -105,7 +105,7 @@ function DashboardPage() {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify(newListedMovie),
-            }
+            },
           );
           console.log(addMovieResponse);
 
@@ -331,7 +331,7 @@ function DashboardPage() {
       </div>
       {/* User's Reviews */}
       <div className="dashboard-review-container">
-        <h1 className="dashboard-review-text-center mb-4">Your Reviews</h1>
+        <h2 className="dashboard-review-text-center mb-4">My Reviews</h2>
 
         <div className="dashboard-review-row">
           <div className="dashboard-review-col-md-6">

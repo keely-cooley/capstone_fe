@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useUserContext } from "../context/UserContext";
 import ReviewCard from "./ReviewCard";
 
 function ReviewList(props) {
   const { userReviews, setUserReviews } = props;
+  const { currentUser } = useUserContext();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -18,7 +20,10 @@ function ReviewList(props) {
       })
       .then((reviews) => {
         console.log("Dashboard.jsx - fetched reviews for display", reviews);
+        // console.log(currentUser)
 
+        //filter reviews for only currentUser
+        const filteredReviews = reviews.filter((review) => review.userId === currentUser.userId)
         // extract all unique movieIds from the reviews
         const movieIds = [...new Set(reviews.map((review) => review.movieId))];
 
@@ -37,7 +42,7 @@ function ReviewList(props) {
             }, {});
 
             // add movie titles to reviews based on movieId
-            const reviewsWithMovies = reviews.map((review) => ({
+            const reviewsWithMovies = filteredReviews.map((review) => ({
               ...review,
               movieTitle: movieMap[review.movieId] || "Unknown Movie",
             }));

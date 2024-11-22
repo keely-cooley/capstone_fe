@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useUserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import "../css/SignUpPage.css";
-import UserStatus from "./UserStatus";
+// import UserStatus from "./UserStatus";
 
 function SignUpForm() {
   const [userEmail, setUserEmail] = useState("");
@@ -89,7 +89,7 @@ function SignUpForm() {
     <div className="SignUpForm componentBox">
       <h2 className="login-header">Sign Up</h2>
 
-      <UserStatus /> {/* displays alternative message if user is already logged in*/}
+      {/* <UserStatus /> displays alternative message if user is already logged in */}
 
       {!currentUser.username && ( //if user is not logged in, display sign up form
         <form onSubmit={handleSubmit}>
