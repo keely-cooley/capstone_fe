@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import "../css/SignUpPage.css";
@@ -11,9 +11,9 @@ function SignUpForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [submitResult, setSubmitResult] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const { currentUser, handleUpdateUser } = useUserContext();
   const navigate = useNavigate();
 
-  const { currentUser, handleUpdateUser } = useUserContext();
 
   //function to check if passwords match in real-time
   const handleConfirmPasswordChange = (e) => {
@@ -33,7 +33,7 @@ function SignUpForm() {
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/;
 
     //password validation
-    if (userPassword.length < 5) {
+    if (userPassword.length < 8) {
       setSubmitResult("Password must be at least 8 characters long");
     } else if (userPassword === userEmail) {
       setSubmitResult("Password cannot match email address");
@@ -63,13 +63,13 @@ function SignUpForm() {
 
         if (response.ok) {
           console.log("NEW USER EMAIL:", userEmail);
-          setSubmitResult("Welcome To Cinnefiles!");
+          // setSubmitResult("Welcome To Cinnefiles!");
 
           handleUpdateUser({ email: userEmail, username: username });
           console.log("NEW USER LOGGING IN:", currentUser);
 
           //redirect to dashboard
-          navigate("/dashboard");
+          setSubmitResult("");
         } else {
           setSubmitResult(data.result);
         }
@@ -78,6 +78,12 @@ function SignUpForm() {
       }
     }
   };
+
+  useEffect(() => {
+    if (currentUser?.email) {
+      navigate("/dashboard");
+    }
+  }, [currentUser, navigate])
 
   return (
     <div className="SignUpForm componentBox">
