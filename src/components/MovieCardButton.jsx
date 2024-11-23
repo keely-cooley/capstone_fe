@@ -1,5 +1,3 @@
-import "../css/MovieList.css";
-
 //add movie to watchlist
 const MovieCardButton = (props) => {
   const { movie, buttonText, handleButtonClick } = props

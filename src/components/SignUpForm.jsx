@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import "../css/SignUpPage.css";
-import UserStatus from "./UserStatus";
+// import UserStatus from "./UserStatus";
 
 function SignUpForm() {
   const [userEmail, setUserEmail] = useState("");
@@ -11,17 +11,16 @@ function SignUpForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [submitResult, setSubmitResult] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState(true);
-  const navigate = useNavigate();
-
   const { currentUser, handleUpdateUser } = useUserContext();
+  const navigate = useNavigate();
 
   //function to check if passwords match in real-time
   const handleConfirmPasswordChange = (e) => {
     setConfirmPassword(e.target.value);
     if (e.target.value === userPassword) {
-      setPasswordsMatch(true); 
+      setPasswordsMatch(true);
     } else {
-      setPasswordsMatch(false); 
+      setPasswordsMatch(false);
     }
   };
 
@@ -65,11 +64,13 @@ function SignUpForm() {
           console.log("NEW USER EMAIL:", userEmail);
           setSubmitResult("Welcome To Cinnefiles!");
 
-          handleUpdateUser({ email: userEmail, username: username });
+          handleUpdateUser({
+            email: userEmail,
+            username: username,
+            id: data.data.id,
+          });
           console.log("NEW USER LOGGING IN:", currentUser);
-
-          //redirect to dashboard
-          navigate("/dashboard");
+          console.log("Signup API response: ", response.status, data);
         } else {
           setSubmitResult(data.result);
         }
@@ -79,11 +80,19 @@ function SignUpForm() {
     }
   };
 
+  //redirect to dashboard
+  useEffect(() => {
+    if (currentUser?.id) {
+      console.log("Navigating to dashboard with user:", currentUser);
+      navigate("/dashboard");
+    }
+  }, [currentUser]);  
+  
   return (
     <div className="SignUpForm componentBox">
       <h2 className="login-header">Sign Up</h2>
 
-      <UserStatus /> {/* displays alternative message if user is already logged in*/}
+      {/* <UserStatus /> displays alternative message if user is already logged in */}
 
       {!currentUser.username && ( //if user is not logged in, display sign up form
         <form onSubmit={handleSubmit}>
@@ -123,7 +132,9 @@ function SignUpForm() {
             </label>
             {/* Display password requirements */}
             <p className="signup-password-requirements">
-              Password must be 8-15 characters and include at least one lowercase letter, one uppercase letter, one number, and one special character.
+              Password must be 8-15 characters and include at least one
+              lowercase letter, one uppercase letter, one number, and one
+              special character.
             </p>
           </div>
 

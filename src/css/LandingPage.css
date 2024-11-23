@@ -301,7 +301,8 @@ body {
 .landing-review-slot {
   max-height: 400px; 
   overflow-y: scroll;
-  padding-right: 10px;
+  padding-right: 10px;  scrollbar-width: thin; /* For Firefox */
+  scrollbar-color: rgba(177, 105, 213, 0.8) transparent; /* For Firefox */
 }
 
 .landing-review-card {

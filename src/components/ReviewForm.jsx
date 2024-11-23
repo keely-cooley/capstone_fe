@@ -1,73 +1,104 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import StarRating from "./StarRating";
+import { useUserContext } from "../context/UserContext";
+import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
-function ReviewForm({ setUserReviews }) {
-  const [movieTitle, setMovieTitle] = useState("");
+function ReviewForm({ seenListUpdated, fetchReviewsWithMovieTitlesByUserId }) {
+  const { currentUser } = useUserContext();
+
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState("");
+  const [movieTitles, setMovieTitles] = useState([]);
+  const [movieId, setMovieId] = useState(0);
 
-  const handleSubmit = (e) => {
+  // Fetch seen movies asynchronously
+  const fetchSeenList = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8083/seenMovies/user/${currentUser.userId}`
+      );
+      const data = await response.json();
+      const titles = data.map((movie) => ({
+        id: movie.id,
+        name: movie.title,
+      }));
+      setMovieTitles(titles);
+    } catch (error) {
+      console.error("Error fetching seen list:", error);
+    }
+  };
+
+  // UseEffect to fetch the seen list on load and when seenListUpdated changes
+  useEffect(() => {
+    const fetchData = async () => {
+      await fetchSeenList(); // re-fetch seen list when seenListUpdated changes
+    };
+    fetchData();
+  }, [seenListUpdated, currentUser.userId]);
+
+  // Handle submit function asynchronously
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    //create new review
-    fetch("http://localhost:8083/reviews/new", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ movieTitle, rating, content }),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        console.log("Review created:", json);
-        
-        // fetch updated reviews after successful POST
-        fetch("http://localhost:8083/reviews")
-          .then((res) => res.json())
-          .then((json) => {
-            console.log("Updated reviews:", json);
-            setUserReviews(json);
-          })
-          .catch((err) => console.error("Error fetching reviews:", err));
-      })
-      .catch((error) => {
-        console.error("Error adding new review:", error);
+    const newReview = {
+      rating: rating,
+      content: content,
+      userId: currentUser.userId,
+      movieId: movieId,
+    };
+
+    try {
+      // POST new review
+      const response = await fetch("http://localhost:8083/reviews/new", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newReview),
       });
+
+      const reviewData = await response.json();
+      console.log("Review created:", reviewData);
+
+      fetchReviewsWithMovieTitlesByUserId();
+    } catch (error) {
+      console.error("Error adding new review:", error);
+    }
+  };
+
+  // Handle movie selection asynchronously
+  const handleOnSelect = (item) => {
+    setMovieId(item.id);
   };
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        {/* {movie title} */}
         <div>
           <label>
             {" "}
-            Title:
-            <input
-              type="text"
-              value={movieTitle}
-              name="movieTitle"
-              onChange={(e) => setMovieTitle(e.target.value)}
+            Find A Title In Your Seen List:
+            <ReactSearchAutocomplete
+              items={movieTitles}
+              onSelect={handleOnSelect}
             />
           </label>
         </div>
 
-        {/* {movie rating} */}
         <div>
           <StarRating rating={rating} setRating={setRating} />
         </div>
 
-        {/* {movie rating content} */}
         <div>
           <label>
             {" "}
-            Review:
             <input
               type="text"
               value={content}
               name="content"
               onChange={(e) => setContent(e.target.value)}
+              placeholder="Write your review..."
             />
           </label>
         </div>

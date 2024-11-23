@@ -18,6 +18,7 @@ function DashboardPage() {
   const [seenList, setSeenList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [userReviews, setUserReviews] = useState([]);
+  const [seenListUpdated, setSeenListUpdated] = useState(false);
 
   //search for movies
   const getMovieRequest = async (searchValue) => {
@@ -265,15 +266,33 @@ function DashboardPage() {
     }
   };
 
+  const fetchReviewsWithMovieTitlesByUserId = async () => {
+    console.log("FETCHREVIEWSWITHMOVIETITLESBYUSERID");
+    try {
+      const response = await fetch(
+        `http://localhost:8083/reviews/userwithreviewsandmovietitles/id/${currentUser.userId}`
+      );
+      const validResponseJson = await response.json();
+      await setUserReviews(validResponseJson);
+    } catch (error) {
+      console.log("fetchReviewsWithMovieTitleByUserId: error", error);
+    }
+  };
+
+  //re-fetch when a movie is added to seen list
+  const handleSeenListUpdate = () => {
+    setSeenListUpdated((prev) => !prev);
+  };
+
   //any time the page loads, load 'my list' from database
   useEffect(() => {
     fetchMyList();
   }, [currentUser.userId]);
 
-  //any time the page loads, load 'seen list' from database
+  //any time the page loads or setSenListUpdated changes, load 'seen list' from database
   useEffect(() => {
     fetchSeenList();
-  }, [currentUser.userId]);
+  }, [seenListUpdated, currentUser.userId]);
 
   return (
     <>
@@ -294,7 +313,7 @@ function DashboardPage() {
           <MovieList
             movies={movies}
             addMovieToList={addMovieToList}
-            addMovieToSeen={addMovieToSeen}
+            addMovieToSeen={null}
             removeMovie={null}
           />
         </div>
@@ -331,26 +350,38 @@ function DashboardPage() {
       </div>
       {/* User's Reviews */}
       <div className="dashboard-review-container">
-        <h2 className="dashboard-review-text-center mb-4">My Reviews</h2>
+        <div className="dashboard-box-of-reviews">
+          <h2 className="dashboard-review-header">Your Reviews</h2>
 
-        <div className="dashboard-review-row">
-          <div className="dashboard-review-col-md-6">
-            <div className="dashboard-review-card mb-4">
-              <div className="dashboard-review-card-body">
-                <h3 className="dashboard-review-card-title">New Review</h3>
-                <ReviewForm setUserReviews={setUserReviews} />
+          <div className="dashboard-review-row">
+            <div className="dashboard-review-col-md-6">
+              <div className="dashboard-review-card">
+                <div className="dashboard-review-card-body">
+                  <h3 className="dashboard-review-card-title">New Review</h3>
+                  <ReviewForm
+                    setUserReviews={setUserReviews}
+                    handleSeenListUpdate={handleSeenListUpdate}
+                    seenListUpdated={seenListUpdated}
+                    fetchReviewsWithMovieTitlesByUserId={
+                      fetchReviewsWithMovieTitlesByUserId
+                    }
+                  />
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="dashboard-review-col-md-6">
-            <div className="dashboard-review-card mb-4">
-              <div className="dashboard-review-card-body">
-                <h3 className="dashboard-review-card-title">All Reviews</h3>
-                <ReviewDashboard
-                  userReviews={userReviews}
-                  setUserReviews={setUserReviews}
-                />
+            <div className="dashboard-review-col-md-6">
+              <div className="dashboard-review-card">
+                <div className="dashboard-review-card-body">
+                  <h3 className="dashboard-review-card-title">All Reviews</h3>
+                  <ReviewDashboard
+                    userReviews={userReviews}
+                    setUserReviews={setUserReviews}
+                    fetchReviewsWithMovieTitlesByUserId={
+                      fetchReviewsWithMovieTitlesByUserId
+                    }
+                  />
+                </div>
               </div>
             </div>
           </div>
