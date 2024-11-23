@@ -10,8 +10,6 @@ function UserReview(props) {
   const [isEditing, setIsEditing] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  console.log("ReviewCard.jsx - review:", id, title, rating, content);
-
   const handleUpdate = (updatedReview) => {
     onUpdate(updatedReview);
     setIsEditing(false);
@@ -32,8 +30,12 @@ function UserReview(props) {
           <StarRating rating={parseInt(rating, 10)} readOnly={true} />
         </span>
         <p className="review-content">{content}</p>
-        <button className="button" onClick={() => setIsEditing(true)}>Edit</button>
-        <button className="button" onClick={() => setIsDeleting(true)}>Delete</button>
+        <button className="button" onClick={() => setIsEditing(true)}>
+          Edit
+        </button>
+        <button className="button" onClick={() => setIsDeleting(true)}>
+          Delete
+        </button>
 
         {isEditing && (
           <ReviewEdit

@@ -18,7 +18,7 @@ function DashboardPage() {
   const [seenList, setSeenList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [userReviews, setUserReviews] = useState([]);
-  const [seenListUpdated, setSeenListUpdated] = useState(false)
+  const [seenListUpdated, setSeenListUpdated] = useState(false);
 
   //search for movies
   const getMovieRequest = async (searchValue) => {
@@ -106,7 +106,7 @@ function DashboardPage() {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify(newListedMovie),
-            },
+            }
           );
           console.log(addMovieResponse);
 
@@ -266,9 +266,22 @@ function DashboardPage() {
     }
   };
 
+  const fetchReviewsWithMovieTitlesByUserId = async () => {
+    console.log("FETCHREVIEWSWITHMOVIETITLESBYUSERID");
+    try {
+      const response = await fetch(
+        `http://localhost:8083/reviews/userwithreviewsandmovietitles/id/${currentUser.userId}`
+      );
+      const validResponseJson = await response.json();
+      await setUserReviews(validResponseJson);
+    } catch (error) {
+      console.log("fetchReviewsWithMovieTitleByUserId: error", error);
+    }
+  };
+
   //re-fetch when a movie is added to seen list
   const handleSeenListUpdate = () => {
-    setSeenListUpdated(prev => !prev);
+    setSeenListUpdated((prev) => !prev);
   };
 
   //any time the page loads, load 'my list' from database
@@ -345,9 +358,14 @@ function DashboardPage() {
               <div className="dashboard-review-card">
                 <div className="dashboard-review-card-body">
                   <h3 className="dashboard-review-card-title">New Review</h3>
-                  <ReviewForm setUserReviews={setUserReviews} 
-                  handleSeenListUpdate={handleSeenListUpdate}
-                  seenListUpdated={seenListUpdated}/>
+                  <ReviewForm
+                    setUserReviews={setUserReviews}
+                    handleSeenListUpdate={handleSeenListUpdate}
+                    seenListUpdated={seenListUpdated}
+                    fetchReviewsWithMovieTitlesByUserId={
+                      fetchReviewsWithMovieTitlesByUserId
+                    }
+                  />
                 </div>
               </div>
             </div>
@@ -359,6 +377,9 @@ function DashboardPage() {
                   <ReviewDashboard
                     userReviews={userReviews}
                     setUserReviews={setUserReviews}
+                    fetchReviewsWithMovieTitlesByUserId={
+                      fetchReviewsWithMovieTitlesByUserId
+                    }
                   />
                 </div>
               </div>

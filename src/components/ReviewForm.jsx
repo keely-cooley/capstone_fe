@@ -3,7 +3,7 @@ import StarRating from "./StarRating";
 import { useUserContext } from "../context/UserContext";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
-function ReviewForm({ setUserReviews, handleSeenListUpdate, seenListUpdated }) {
+function ReviewForm({ seenListUpdated, fetchReviewsWithMovieTitlesByUserId }) {
   const { currentUser } = useUserContext();
 
   const [rating, setRating] = useState(0);
@@ -11,26 +11,33 @@ function ReviewForm({ setUserReviews, handleSeenListUpdate, seenListUpdated }) {
   const [movieTitles, setMovieTitles] = useState([]);
   const [movieId, setMovieId] = useState(0);
 
+  // Fetch seen movies asynchronously
   const fetchSeenList = async () => {
     try {
       const response = await fetch(
         `http://localhost:8083/seenMovies/user/${currentUser.userId}`
       );
       const data = await response.json();
-      const titles = data.map((movie) => {
-        return { id: movie.id, name: movie.title };
-      });
+      const titles = data.map((movie) => ({
+        id: movie.id,
+        name: movie.title,
+      }));
       setMovieTitles(titles);
     } catch (error) {
-      console.log("Error fetching seen list:", error);
+      console.error("Error fetching seen list:", error);
     }
   };
 
+  // UseEffect to fetch the seen list on load and when seenListUpdated changes
   useEffect(() => {
-    fetchSeenList(); // re-fetch seen list when seenListUpdated changes
-  }, [seenListUpdated, currentUser.userId]); 
+    const fetchData = async () => {
+      await fetchSeenList(); // re-fetch seen list when seenListUpdated changes
+    };
+    fetchData();
+  }, [seenListUpdated, currentUser.userId]);
 
-  const handleSubmit = (e) => {
+  // Handle submit function asynchronously
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newReview = {
@@ -40,32 +47,27 @@ function ReviewForm({ setUserReviews, handleSeenListUpdate, seenListUpdated }) {
       movieId: movieId,
     };
 
-    fetch("http://localhost:8083/reviews/new", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(newReview),
-    })
-      .then((res) => res.json())
-      .then((json) => {
-        console.log("Review created:", json);
-
-        handleSeenListUpdate(); // trigger the update for seen list
-
-        fetch(`http://localhost:8083/reviews/user/id/${currentUser.userId}`)
-          .then((res) => res.json())
-          .then((json) => {
-            setUserReviews(json);
-          })
-          .catch((err) => console.error("Error fetching reviews:", err));
-      })
-      .catch((error) => {
-        console.error("Error adding new review:", error);
+    try {
+      // POST new review
+      const response = await fetch("http://localhost:8083/reviews/new", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newReview),
       });
+
+      const reviewData = await response.json();
+      console.log("Review created:", reviewData);
+
+      fetchReviewsWithMovieTitlesByUserId();
+    } catch (error) {
+      console.error("Error adding new review:", error);
+    }
   };
 
+  // Handle movie selection asynchronously
   const handleOnSelect = (item) => {
     setMovieId(item.id);
   };
@@ -91,12 +93,12 @@ function ReviewForm({ setUserReviews, handleSeenListUpdate, seenListUpdated }) {
         <div>
           <label>
             {" "}
-            Review:
             <input
               type="text"
               value={content}
               name="content"
               onChange={(e) => setContent(e.target.value)}
+              placeholder="Write your review..."
             />
           </label>
         </div>
