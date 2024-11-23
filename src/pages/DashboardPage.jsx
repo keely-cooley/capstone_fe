@@ -18,6 +18,7 @@ function DashboardPage() {
   const [seenList, setSeenList] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [userReviews, setUserReviews] = useState([]);
+  const [seenListUpdated, setSeenListUpdated] = useState(false)
 
   //search for movies
   const getMovieRequest = async (searchValue) => {
@@ -265,15 +266,20 @@ function DashboardPage() {
     }
   };
 
+  //re-fetch when a movie is added to seen list
+  const handleSeenListUpdate = () => {
+    setSeenListUpdated(prev => !prev);
+  };
+
   //any time the page loads, load 'my list' from database
   useEffect(() => {
     fetchMyList();
   }, [currentUser.userId]);
 
-  //any time the page loads, load 'seen list' from database
+  //any time the page loads or setSenListUpdated changes, load 'seen list' from database
   useEffect(() => {
     fetchSeenList();
-  }, [currentUser.userId]);
+  }, [seenListUpdated, currentUser.userId]);
 
   return (
     <>
@@ -294,7 +300,7 @@ function DashboardPage() {
           <MovieList
             movies={movies}
             addMovieToList={addMovieToList}
-            addMovieToSeen={addMovieToSeen}
+            addMovieToSeen={null}
             removeMovie={null}
           />
         </div>
@@ -339,7 +345,9 @@ function DashboardPage() {
               <div className="dashboard-review-card">
                 <div className="dashboard-review-card-body">
                   <h3 className="dashboard-review-card-title">New Review</h3>
-                  <ReviewForm setUserReviews={setUserReviews} />
+                  <ReviewForm setUserReviews={setUserReviews} 
+                  handleSeenListUpdate={handleSeenListUpdate}
+                  seenListUpdated={seenListUpdated}/>
                 </div>
               </div>
             </div>

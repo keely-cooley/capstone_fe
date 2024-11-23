@@ -26,7 +26,7 @@ function ReviewList(props) {
         const filteredReviews = reviews.filter((review) => review.userId === currentUser.userId)
         console.log("first filtered reviews:", filteredReviews)
         // extract all unique movieIds from the reviews
-        const movieIds = [...new Set(reviews.map((review) => review.movieId))];
+        // const movieIds = [...new Set(reviews.map((review) => review.movieId))];
 
         // fetch all movie details
         fetch(`http://localhost:8083/movies`)
@@ -37,7 +37,7 @@ function ReviewList(props) {
             return res.json();
           })
           .then((movies) => {
-            console.log("questionable endpoint:", movies)
+            console.log("ReviewDashboard.jx - fetchUserReviewsWithMovieDetails - fetch all movies:", movies)
             const movieMap = movies.reduce((acc, movie) => {
               acc[movie.id] = movie.title;
               return acc;
@@ -45,10 +45,10 @@ function ReviewList(props) {
             console.log("MovieMap:", movieMap)
 
             // add movie titles to reviews based on movieId
-            const reviewsWithMovies = filteredReviews.map((review) => ({
-              ...review,
-              movieTitle: movieMap[review.movieId] || "Unknown Movie",
-            }));
+            // const reviewsWithMovies = filteredReviews.map((review) => ({
+            //   ...review,
+            //   movieTitle: movieMap[review.movieId] || "Unknown Movie",
+            // }));
 
             const newMovieData = [];
             filteredReviews.map((review) => {

@@ -3,14 +3,32 @@ import StarRating from "./StarRating";
 import { useUserContext } from "../context/UserContext";
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 
-function ReviewForm({ setUserReviews }) {
+function ReviewForm({ setUserReviews, handleSeenListUpdate, seenListUpdated }) {
   const { currentUser } = useUserContext();
 
-  const [movieTitle, setMovieTitle] = useState("");
   const [rating, setRating] = useState(0);
   const [content, setContent] = useState("");
   const [movieTitles, setMovieTitles] = useState([]);
-  const [ movieId, setMovieId] = useState(0);
+  const [movieId, setMovieId] = useState(0);
+
+  const fetchSeenList = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8083/seenMovies/user/${currentUser.userId}`
+      );
+      const data = await response.json();
+      const titles = data.map((movie) => {
+        return { id: movie.id, name: movie.title };
+      });
+      setMovieTitles(titles);
+    } catch (error) {
+      console.log("Error fetching seen list:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSeenList(); // re-fetch seen list when seenListUpdated changes
+  }, [seenListUpdated, currentUser.userId]); 
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,7 +40,6 @@ function ReviewForm({ setUserReviews }) {
       movieId: movieId,
     };
 
-    //create new review
     fetch("http://localhost:8083/reviews/new", {
       method: "POST",
       headers: {
@@ -35,11 +52,11 @@ function ReviewForm({ setUserReviews }) {
       .then((json) => {
         console.log("Review created:", json);
 
-        // fetch updated reviews after successful POST
+        handleSeenListUpdate(); // trigger the update for seen list
+
         fetch(`http://localhost:8083/reviews/user/id/${currentUser.userId}`)
           .then((res) => res.json())
           .then((json) => {
-            console.log("Updated reviews:", json);
             setUserReviews(json);
           })
           .catch((err) => console.error("Error fetching reviews:", err));
@@ -49,35 +66,13 @@ function ReviewForm({ setUserReviews }) {
       });
   };
 
-  const fetchSeenList = async () => {
-    try {
-      const response = await fetch(
-        `http://localhost:8083/seenMovies/user/${currentUser.userId}`
-      );
-      const data = await response.json();
-      const titles = data.map((movie) => {
-        return { id: movie.id, name: movie.title };
-      });
-      setMovieTitles(titles);
-      console.log(titles);
-    } catch (error) {
-      console.log("DashboardPage.jsx.jsx : an error occurred", error);
-    }
-  };
-
   const handleOnSelect = (item) => {
-    // the item selected
     setMovieId(item.id);
   };
-
-  useEffect(() => {
-    fetchSeenList();
-  }, [currentUser.userId]);
 
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        {/* {movie title} */}
         <div>
           <label>
             {" "}
@@ -89,12 +84,10 @@ function ReviewForm({ setUserReviews }) {
           </label>
         </div>
 
-        {/* {movie rating} */}
         <div>
           <StarRating rating={rating} setRating={setRating} />
         </div>
 
-        {/* {movie rating content} */}
         <div>
           <label>
             {" "}

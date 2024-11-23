@@ -38,14 +38,9 @@ const LandingReview = () => {
         const reviewsData = await reviewResponse.json();
         console.log("Fetched reviews:", reviewsData);
 
-        // extract unique movieIds from reviews
-        const movieIds = [
-          ...new Set(reviewsData.map((review) => review.movieId)),
-        ];
-
         // fetch all movie details
         const movieResponse = await fetch(
-          `http://localhost:8083/movies?ids=${movieIds.join(",")}`
+          `http://localhost:8083/movies`
         );
         if (!movieResponse.ok) {
           throw new Error("Network response for movies was not ok");
